@@ -20,7 +20,7 @@ Module features require PureBasic 5.20 and above.
 - Two-Player Battle  
 - Local Network Two-Player Battle  
 
-![Screenshot](https://github.com/jiowcl/TinyGomoku/Screenshot/Demo1.png)  
+![Screenshot](https://github.com/jiowcl/TinyGomoku/blob/master/Screenshot/Demo1.png)  
 
 ## License
 
