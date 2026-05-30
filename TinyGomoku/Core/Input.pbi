@@ -63,11 +63,16 @@ Procedure CanvasGadgetEvent()
       If stbX >= 0 And stbY >= 0
         TryPlaceAt(stbX, stbY)
       EndIf
+      
+      If IsSound(#SOUND_PUTDOWN_PIECE) <> 0
+        PlaySound(#SOUND_PUTDOWN_PIECE)
+      EndIf
   EndSelect
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 37
+; CursorPosition = 68
+; FirstLine = 22
 ; Folding = -
 ; Optimizer
 ; EnableAsm

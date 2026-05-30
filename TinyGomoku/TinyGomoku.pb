@@ -5,6 +5,16 @@
 
 EnableExplicit
 
+CompilerIf #PB_Compiler_Unicode = 0
+  CompilerError "Enable Unicode in Compiler menu, and save this file as UTF-8 with BOM."
+CompilerEndIf
+
+If InitSound() = 0
+  MessageRequester("Error", "Sound System is not Available",  0)
+  
+  End
+EndIf
+
 IncludeFile "./Core/Enums.pbi"
 IncludeFile "./Core/Globals.pbi"
 IncludeFile "./Core/Helpers.pbi"
@@ -12,10 +22,6 @@ IncludeFile "./Core/Board.pbi"
 IncludeFile "./Core/Drawing.pbi"
 IncludeFile "./Core/Network.pbi"
 IncludeFile "./Core/Input.pbi"
-
-CompilerIf #PB_Compiler_Unicode = 0
-  CompilerError "Enable Unicode in Compiler menu, and save this file as UTF-8 with BOM."
-CompilerEndIf
 
 If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl", #PB_Window_SystemMenu | #PB_Window_MinimizeGadget | #PB_Window_ScreenCentered)
   CanvasGadget(#CANVAS, 15, 15, canvasW, canvasH)
@@ -64,6 +70,7 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
           Case #BTN_RESTART
             InitBoard()
             DrawBoard()
+            
             If gameMode <> #MODE_LOCAL And networkConnected
               NetSendLine("RESET")
             EndIf
@@ -92,8 +99,8 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   CloseWindow(#WIN_MAIN)
 EndIf
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 19
-; FirstLine = 2
+; CursorPosition = 45
+; FirstLine = 9
 ; Folding = -
 ; Optimizer
 ; EnableAsm

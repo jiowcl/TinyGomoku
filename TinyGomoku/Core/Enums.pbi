@@ -39,6 +39,12 @@
 #CANVAS_DEFAULT_W = 550
 #CANVAS_DEFAULT_H = 550
 
+; Sounds
+; From: https://soundeffect-lab.info/sound/button/
+#SOUND_PUTDOWN_PIECE  = 100
+#SOUND_COMPLETED_GAME = 200
+#SOUND_NET_CONNECTION = 201
+
 ; Function Declare
 Declare.i MinI(a.i, b.i)
 Declare.i MaxI(a.i, b.i)
@@ -76,8 +82,8 @@ Declare NetStartLocal()
 Declare NetPoll()
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 75
-; FirstLine = 27
+; CursorPosition = 45
+; FirstLine = 14
 ; Optimizer
 ; EnableAsm
 ; EnableXP

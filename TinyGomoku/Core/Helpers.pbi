@@ -40,6 +40,7 @@ Procedure.s PlayerName(player.i)
   If player = #PLAYER_BLACK
     ProcedureReturn "Black Side"
   EndIf
+  
   ProcedureReturn "White Side"
 EndProcedure
 
@@ -153,8 +154,8 @@ Procedure LoadUIFont()
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 147
-; FirstLine = 104
+; CursorPosition = 42
+; FirstLine = 27
 ; Folding = --
 ; Optimizer
 ; EnableAsm

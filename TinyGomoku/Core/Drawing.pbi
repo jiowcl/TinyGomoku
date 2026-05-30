@@ -207,8 +207,7 @@ Procedure DrawBoard()
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 191
-; FirstLine = 155
+; CursorPosition = 21
 ; Folding = -
 ; Optimizer
 ; EnableAsm

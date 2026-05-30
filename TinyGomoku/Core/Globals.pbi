@@ -34,8 +34,14 @@ Global netConnection.i = 0
 Global netClientID.i = 0
 Global netRxBuffer.s = ""
 
+Global soundPath.s = "./Sound/"
+
+; Sounds
+LoadSound(#SOUND_PUTDOWN_PIECE, soundPath + "100.wav")
+LoadSound(#SOUND_COMPLETED_GAME, soundPath + "200.wav")
+LoadSound(#SOUND_NET_CONNECTION, soundPath + "201.wav")
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 32
+; CursorPosition = 41
 ; Optimizer
 ; EnableAsm
 ; EnableXP

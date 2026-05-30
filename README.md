@@ -30,6 +30,7 @@ Press `Create a Room` and wait for your opponent. Another player presses `Join R
 ## License
 
 Copyright (c) 2017-2026 Ji-Feng Tsai.  
+Copyright (c) 効果音ラボ.  
 Code released under the MIT license.  
 
 ## TODO

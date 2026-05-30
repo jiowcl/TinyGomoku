@@ -235,6 +235,7 @@ Procedure FinishGame(wonPlayer.i, isDraw.i)
 
   If isDraw
     winner = #PLAYER_NONE
+    
     SetGadgetText(#LBL_STATUS, "Draw")
   Else
     winner = wonPlayer
@@ -244,6 +245,10 @@ Procedure FinishGame(wonPlayer.i, isDraw.i)
     Else
       SetGadgetText(#LBL_STATUS, "White Wins")
     EndIf
+  EndIf
+  
+  If IsSound(#SOUND_COMPLETED_GAME) <> 0
+    PlaySound(#SOUND_COMPLETED_GAME)
   EndIf
 EndProcedure
 
@@ -328,8 +333,8 @@ Procedure UndoMove()
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 322
-; FirstLine = 278
+; CursorPosition = 251
+; FirstLine = 232
 ; Folding = ---
 ; Optimizer
 ; EnableAsm

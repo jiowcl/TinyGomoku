@@ -110,6 +110,10 @@ Procedure NetDisconnect()
   SetOnlineControlsEnabled(#True)
   SetGadgetText(#LBL_NET, "Local Versus Mode")
   DisableGadget(#BTN_UNDO, #False)
+  
+  If IsSound(#SOUND_NET_CONNECTION) <> 0
+    PlaySound(#SOUND_NET_CONNECTION)
+  EndIf
 EndProcedure
 
 ; <summary>
@@ -188,7 +192,7 @@ Procedure NetJoinHost()
   SetOnlineControlsEnabled(#False)
   DisableGadget(#BTN_UNDO, #True)
   NetSendLine("HELLO|CLIENT")
-  UpdateStatus()
+  UpdateStatus() 
 EndProcedure
 
 ; <summary>
@@ -231,6 +235,10 @@ Procedure NetPoll()
             NetSendLine("HELLO|WHITE")
             SetGadgetText(#LBL_NET, "Your Opponent has Connected (You are Black Side).")
             UpdateStatus()
+            
+            If IsSound(#SOUND_NET_CONNECTION) <> 0
+              PlaySound(#SOUND_NET_CONNECTION)
+            EndIf
           Else
             CloseNetworkConnection(cid)
           EndIf
@@ -246,6 +254,10 @@ Procedure NetPoll()
             SetGadgetText(#LBL_NET, "The Opponent is Offline.")
             MessageRequester("Connection", "The Opponent is Offline.", #PB_MessageRequester_Ok | #PB_MessageRequester_Info)
             NetStartLocal()
+            
+            If IsSound(#SOUND_NET_CONNECTION) <> 0
+              PlaySound(#SOUND_NET_CONNECTION)
+            EndIf
           EndIf
       EndSelect
     EndIf
@@ -271,7 +283,8 @@ Procedure NetPoll()
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 70
+; CursorPosition = 259
+; FirstLine = 220
 ; Folding = --
 ; Optimizer
 ; EnableAsm
