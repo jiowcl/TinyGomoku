@@ -5,6 +5,8 @@ A Tiny Gomoku Game that allows Online Multiplayer.
 ![GitHub](https://img.shields.io/github/license/jiowcl/TinyGomoku.svg)
 ![PureBasic](https://img.shields.io/badge/language-PureBasic-blue.svg)
 
+![Screenshot](https://github.com/jiowcl/TinyGomoku/blob/master/Screenshot/Demo1.png)  
+
 ## Environment
 
 - Windows 11 above (recommend)  
@@ -15,12 +17,15 @@ A Tiny Gomoku Game that allows Online Multiplayer.
 Building requires PureBasic Compiler and test under Windows 11.  
 Module features require PureBasic 5.20 and above.  
 
+## How to Play  
+
+Press `Local` to start local two-player battle.  
+Press `Create a Room` and wait for your opponent. Another player presses `Join Room` and waits to start.  
+
 ## Feature  
 
 - Two-Player Battle  
 - Local Network Two-Player Battle  
-
-![Screenshot](https://github.com/jiowcl/TinyGomoku/blob/master/Screenshot/Demo1.png)  
 
 ## License
 
