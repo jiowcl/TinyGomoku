@@ -25,6 +25,7 @@ Press `Create a Room` and wait for your opponent. Another player presses `Join R
 ## Feature  
 
 - Two-Player Battle  
+- One-Player Battle with AI  
 - Local Network Two-Player Battle  
 
 ## License

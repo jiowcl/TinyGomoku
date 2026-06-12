@@ -21,13 +21,15 @@ IncludeFile "./Core/Helpers.pbi"
 IncludeFile "./Core/Board.pbi"
 IncludeFile "./Core/Drawing.pbi"
 IncludeFile "./Core/Network.pbi"
+IncludeFile "./Core/AI.pbi"
 IncludeFile "./Core/Input.pbi"
 
 If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl", #PB_Window_SystemMenu | #PB_Window_MinimizeGadget | #PB_Window_ScreenCentered)
   CanvasGadget(#CANVAS, 15, 15, canvasW, canvasH)
   
   TextGadget(#LBL_NET, 15, 575, 550, 20, "Two-Player Battle in this Game")
-  ButtonGadget(#BTN_LOCAL, 15, 600, 135, 30, "Local")
+  ButtonGadget(#BTN_LOCAL, 15, 600, 130, 30, "Local")
+  ButtonGadget(#BTN_AI, 150, 600, 130, 30, "vs AI")
   
   TextGadget(#PB_Any, 296, 608, 30, 20, "IP:")
   StringGadget(#STR_HOST, 330, 600, 120, 24, "127.0.0.1")
@@ -60,6 +62,9 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
         Select EventGadget()
           Case #BTN_LOCAL
             NetStartLocal()
+
+          Case #BTN_AI
+            AiStartGame()
   
           Case #BTN_HOST
             NetStartHost()
@@ -71,7 +76,7 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
             InitBoard()
             DrawBoard()
             
-            If gameMode <> #MODE_LOCAL And networkConnected
+            If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI And networkConnected
               NetSendLine("RESET")
             EndIf
   

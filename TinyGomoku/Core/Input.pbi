@@ -11,11 +11,15 @@
 ; <returns>Returns void.</returns>
 Procedure TryPlaceAt(x.i, y.i)
   If ApplyMove(x, y, #False)
-    If gameMode <> #MODE_LOCAL And networkConnected
+    If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI And networkConnected
       NetSendLine("MOVE|" + Str(x) + "|" + Str(y))
     EndIf
     
     DrawBoard()
+
+    If gameMode = #MODE_AI And Not gameOver
+      AiMakeMove()
+    EndIf
   EndIf
 EndProcedure
 
@@ -52,7 +56,11 @@ Procedure CanvasGadgetEvent()
         ProcedureReturn
       EndIf
       
-      If gameMode <> #MODE_LOCAL And Not networkConnected
+      If gameMode = #MODE_AI And currentPlayer = aiPlayer
+        ProcedureReturn
+      EndIf
+
+      If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI And Not networkConnected
         ProcedureReturn
       EndIf
       

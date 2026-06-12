@@ -274,7 +274,7 @@ Procedure.b ApplyMove(x.i, y.i, fromNetwork.i)
     ProcedureReturn #False
   EndIf
 
-  If gameMode <> #MODE_LOCAL And networkConnected
+  If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI And networkConnected
     If fromNetwork = #False And currentPlayer <> myPlayer
       ProcedureReturn #False
     EndIf
@@ -310,7 +310,7 @@ EndProcedure
 Procedure UndoMove()
   Protected last.i
 
-  If gameMode <> #MODE_LOCAL
+  If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI
     ProcedureReturn
   EndIf
 

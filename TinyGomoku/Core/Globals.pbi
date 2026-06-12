@@ -29,6 +29,8 @@ Global stbX.i, stbY.i
 
 Global gameMode.i = #MODE_LOCAL
 Global myPlayer.i = #PLAYER_NONE
+Global aiPlayer.i = #PLAYER_WHITE
+Global aiMoveX.i, aiMoveY.i
 Global networkConnected.i = #False
 Global netConnection.i = 0
 Global netClientID.i = 0

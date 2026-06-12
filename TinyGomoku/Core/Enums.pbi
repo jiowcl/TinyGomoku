@@ -3,6 +3,8 @@
 ;  Code released under the MIT license.
 ;--------------------------------------------------------------------------------------------
 
+#VERSION          = 1.1
+
 ; CheckerBoard
 #BOARD_SIZE       = 15
 #MAX_MOVES        = #BOARD_SIZE * #BOARD_SIZE
@@ -20,6 +22,7 @@
 #STR_HOST         = 8
 #STR_PORT         = 9
 #LBL_NET          = 10
+#BTN_AI           = 11
 
 ; Piece
 #PLAYER_NONE      = 0
@@ -30,6 +33,7 @@
 #MODE_LOCAL       = 0
 #MODE_HOST        = 1
 #MODE_CLIENT      = 2
+#MODE_AI          = 3
 
 ; Network
 #NET_PORT_DEFAULT = 8765
@@ -81,9 +85,12 @@ Declare NetJoinHost()
 Declare NetStartLocal()
 Declare NetPoll()
 
+Declare.b AiFindBestMove()
+Declare AiMakeMove()
+Declare AiStartGame()
+
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 45
-; FirstLine = 14
+; CursorPosition = 5
 ; Optimizer
 ; EnableAsm
 ; EnableXP
