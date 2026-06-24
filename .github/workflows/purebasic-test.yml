@@ -46,7 +46,7 @@ jobs:
     - name: Execute Test / Compilation Project
       shell: powershell
       run: |
-        cd TinyGomoku/Example
+        cd TinyGomoku
         
         pbcompiler TinyGomoku.pb /OUTPUT TinyGomoku.exe /QUIET
         
