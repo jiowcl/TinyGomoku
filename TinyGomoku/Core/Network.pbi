@@ -106,6 +106,7 @@ Procedure NetDisconnect()
   netRxBuffer = ""
   gameMode = #MODE_LOCAL
   myPlayer = #PLAYER_NONE
+  AiCancelPending()
   
   SetOnlineControlsEnabled(#True)
   SetGadgetText(#LBL_NET, "Local Versus Mode")

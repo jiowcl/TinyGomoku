@@ -35,6 +35,9 @@
 #MODE_CLIENT      = 2
 #MODE_AI          = 3
 
+; AI
+#AI_MOVE_DELAY_MS = 350
+
 ; Network
 #NET_PORT_DEFAULT = 8765
 #NET_SERVER       = 0
@@ -87,6 +90,9 @@ Declare NetPoll()
 
 Declare.b AiFindBestMove()
 Declare AiMakeMove()
+Declare AiScheduleMove()
+Declare AiPoll()
+Declare AiCancelPending()
 Declare AiStartGame()
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)

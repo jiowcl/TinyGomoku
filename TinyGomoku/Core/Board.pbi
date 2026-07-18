@@ -304,15 +304,11 @@ Procedure.b ApplyMove(x.i, y.i, fromNetwork.i)
 EndProcedure
 
 ; <summary>
-; UndoMove
+; UndoOneMove
 ; </summary>
 ; <returns>Returns void.</returns>
-Procedure UndoMove()
+Procedure UndoOneMove()
   Protected last.i
-
-  If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI
-    ProcedureReturn
-  EndIf
 
   If moveCount = 0
     ProcedureReturn
@@ -328,7 +324,37 @@ Procedure UndoMove()
   last = moveCount
   board(moveX(last), moveY(last)) = #PLAYER_NONE
   currentPlayer = movePlayer(last)
-  
+EndProcedure
+
+; <summary>
+; UndoMove
+; </summary>
+; <returns>Returns void.</returns>
+Procedure UndoMove()
+  If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI
+    ProcedureReturn
+  EndIf
+
+  If moveCount = 0
+    ProcedureReturn
+  EndIf
+
+  If gameMode = #MODE_AI
+    AiCancelPending()
+
+    ; While AI is still "thinking", only the human's last stone exists.
+    If currentPlayer = aiPlayer And moveCount >= 1 And movePlayer(moveCount - 1) = myPlayer
+      UndoOneMove()
+    ElseIf moveCount >= 2
+      UndoOneMove()
+      UndoOneMove()
+    Else
+      UndoOneMove()
+    EndIf
+  Else
+    UndoOneMove()
+  EndIf
+
   UpdateStatus()
 EndProcedure
 

@@ -17,8 +17,8 @@ Procedure TryPlaceAt(x.i, y.i)
     
     DrawBoard()
 
-    If gameMode = #MODE_AI And Not gameOver
-      AiMakeMove()
+    If gameMode = #MODE_AI And Not gameOver And currentPlayer = aiPlayer
+      AiScheduleMove()
     EndIf
   EndIf
 EndProcedure

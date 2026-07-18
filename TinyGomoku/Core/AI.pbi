@@ -237,6 +237,29 @@ Procedure.b AiFindBestMove()
 EndProcedure
 
 ; <summary>
+; AiCancelPending
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiCancelPending()
+  aiPending = #False
+  aiPendingAt = 0
+EndProcedure
+
+; <summary>
+; AiScheduleMove
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiScheduleMove()
+  If gameMode <> #MODE_AI Or gameOver Or currentPlayer <> aiPlayer
+    ProcedureReturn
+  EndIf
+
+  aiPending = #True
+  aiPendingAt = ElapsedMilliseconds() + #AI_MOVE_DELAY_MS
+  UpdateStatus()
+EndProcedure
+
+; <summary>
 ; AiMakeMove
 ; </summary>
 ; <returns>Returns void.</returns>
@@ -256,6 +279,28 @@ Procedure AiMakeMove()
 EndProcedure
 
 ; <summary>
+; AiPoll
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiPoll()
+  If Not aiPending
+    ProcedureReturn
+  EndIf
+
+  If gameMode <> #MODE_AI Or gameOver Or currentPlayer <> aiPlayer
+    AiCancelPending()
+    ProcedureReturn
+  EndIf
+
+  If ElapsedMilliseconds() < aiPendingAt
+    ProcedureReturn
+  EndIf
+
+  AiCancelPending()
+  AiMakeMove()
+EndProcedure
+
+; <summary>
 ; AiStartGame
 ; </summary>
 ; <returns>Returns void.</returns>
@@ -265,6 +310,7 @@ Procedure AiStartGame()
   gameMode = #MODE_AI
   myPlayer = #PLAYER_BLACK
   aiPlayer = #PLAYER_WHITE
+  AiCancelPending()
 
   InitBoard()
   DrawBoard()

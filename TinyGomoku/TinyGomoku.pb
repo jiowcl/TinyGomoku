@@ -53,6 +53,7 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   ; Ui Event
   Repeat
     NetPoll()
+    AiPoll()
   
     Select WaitWindowEvent(10)
       Case #PB_Event_CloseWindow
@@ -73,6 +74,7 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
             NetJoinHost()
   
           Case #BTN_RESTART
+            AiCancelPending()
             InitBoard()
             DrawBoard()
             

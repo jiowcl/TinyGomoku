@@ -27,6 +27,7 @@ Press `Create a Room` and wait for your opponent. Another player presses `Join R
 - Two-Player Battle  
 - One-Player Battle with AI  
 - Local Network Two-Player Battle  
+- Local vs AI  
 
 ## License
 
@@ -36,7 +37,6 @@ Code released under the MIT license.
 
 ## TODO
 
-- Online Battles  
 - Some Game Effects  
 
 ## Donation

@@ -31,6 +31,8 @@ Global gameMode.i = #MODE_LOCAL
 Global myPlayer.i = #PLAYER_NONE
 Global aiPlayer.i = #PLAYER_WHITE
 Global aiMoveX.i, aiMoveY.i
+Global aiPending.i = #False
+Global aiPendingAt.i = 0
 Global networkConnected.i = #False
 Global netConnection.i = 0
 Global netClientID.i = 0
