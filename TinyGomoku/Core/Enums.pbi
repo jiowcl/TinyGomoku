@@ -61,8 +61,9 @@
 #SOUND_NET_CONNECTION = 201
 
 ; Effects
-#FX_PLACE_MS          = 220
+#FX_PLACE_MS          = 280
 #FX_WINLINE_PERIOD_MS = 800
+#FX_WINLINE_THICK     = 3
 
 ; Function Declare
 Declare.i MinI(a.i, b.i)
@@ -88,11 +89,16 @@ Declare.b ApplyMove(x.i, y.i, fromNetwork.i)
 Declare UndoMove()
 
 Declare DrawPiece(sx.i, sy.i, isBlack.i)
+Declare DrawPieceFx(sx.i, sy.i, isBlack.i, radius.i, alpha.i)
 Declare DrawWinLine()
 Declare DrawBoardContent()
 Declare DrawBoard()
 Declare.b EffectsActive()
 Declare EffectsTick()
+Declare.i PlaceFxProgress()
+Declare.i PlaceFxLinear()
+Declare.i PlaceFxScalePct()
+Declare.i EaseOutQuad100(t.i)
 
 Declare NetSendLine(line.s)
 Declare NetReceiveData(connectionID.i)

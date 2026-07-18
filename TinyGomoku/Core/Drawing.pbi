@@ -4,50 +4,30 @@
 ;--------------------------------------------------------------------------------------------
 
 ; <summary>
-; DrawPiece
+; EaseOutQuad100
 ; </summary>
-; <param name="sx"></param>
-; <param name="sy"></param>
-; <param name="isBlack"></param>
-; <returns>Returns void.</returns>
-Procedure DrawPiece(sx.i, sy.i, isBlack.i)
-  Protected r.i = pieceRadius
+; <param name="t"></param>
+; <returns>Returns 0-100 eased.</returns>
+Procedure.i EaseOutQuad100(t.i)
+  Protected u.i
 
-  DrawingMode(#PB_2DDrawing_Default | #PB_2DDrawing_Transparent)
-
-  If isBlack
-    Circle(sx, sy, r, RGB(0, 0, 0))
-  Else
-    Circle(sx, sy, r, RGB(255, 255, 255))
+  If t <= 0
+    ProcedureReturn 0
   EndIf
+  
+  If t >= 100
+    ProcedureReturn 100
+  EndIf
+
+  u = 100 - t
+  ProcedureReturn 100 - (u * u) / 100
 EndProcedure
 
 ; <summary>
-; DrawPieceFx
+; PlaceFxLinear
 ; </summary>
-; <param name="sx"></param>
-; <param name="sy"></param>
-; <param name="isBlack"></param>
-; <param name="radius"></param>
-; <param name="alpha"></param>
-; <returns>Returns void.</returns>
-Procedure DrawPieceFx(sx.i, sy.i, isBlack.i, radius.i, alpha.i)
-  DrawingMode(#PB_2DDrawing_AlphaBlend)
-
-  If isBlack
-    Circle(sx, sy, radius, RGBA(0, 0, 0, alpha))
-  Else
-    Circle(sx, sy, radius, RGBA(255, 255, 255, alpha))
-  EndIf
-
-  DrawingMode(#PB_2DDrawing_Default)
-EndProcedure
-
-; <summary>
-; PlaceFxProgress
-; </summary>
-; <returns>Returns 0-100, or 100 if idle.</returns>
-Procedure.i PlaceFxProgress()
+; <returns>Returns 0-100 linear time.</returns>
+Procedure.i PlaceFxLinear()
   Protected elapsed.i
 
   If placeFxAt = 0 Or moveCount = 0
@@ -68,6 +48,105 @@ Procedure.i PlaceFxProgress()
 EndProcedure
 
 ; <summary>
+; PlaceFxProgress
+; Eased alpha progress 0-100.
+; </summary>
+; <returns>Returns integer.</returns>
+Procedure.i PlaceFxProgress()
+  ProcedureReturn EaseOutQuad100(PlaceFxLinear())
+EndProcedure
+
+; <summary>
+; PlaceFxScalePct
+; Radius scale with overshoot, then settle to 100.
+; </summary>
+; <returns>Returns percent (e.g. 100 = normal size).</returns>
+Procedure.i PlaceFxScalePct()
+  Protected t.i = PlaceFxLinear()
+  Protected p.i
+  Protected grow.i
+
+  If t >= 100
+    ProcedureReturn 100
+  EndIf
+
+  If t < 72
+    p = EaseOutQuad100(t * 100 / 72)
+    ; Grow from 20% to 112%
+    grow = 20 + p * 92 / 100
+    ProcedureReturn grow
+  EndIf
+
+  ; Settle 112% → 100%
+  p = (t - 72) * 100 / 28
+  p = EaseOutQuad100(p)
+  ProcedureReturn 112 - p * 12 / 100
+EndProcedure
+
+; <summary>
+; DrawPiece
+; </summary>
+; <param name="sx"></param>
+; <param name="sy"></param>
+; <param name="isBlack"></param>
+; <returns>Returns void.</returns>
+Procedure DrawPiece(sx.i, sy.i, isBlack.i)
+  DrawPieceFx(sx, sy, isBlack, pieceRadius, 255)
+EndProcedure
+
+; <summary>
+; DrawPieceFx
+; Soft shadow + body + rim + highlight.
+; </summary>
+; <param name="sx"></param>
+; <param name="sy"></param>
+; <param name="isBlack"></param>
+; <param name="radius"></param>
+; <param name="alpha"></param>
+; <returns>Returns void.</returns>
+Procedure DrawPieceFx(sx.i, sy.i, isBlack.i, radius.i, alpha.i)
+  Protected r.i = radius
+  Protected shadowA.i, rimA.i, highA.i
+  Protected hx.i, hy.i, hr.i
+
+  If r < 2
+    r = 2
+  EndIf
+
+  If alpha < 1
+    alpha = 1
+  ElseIf alpha > 255
+    alpha = 255
+  EndIf
+
+  shadowA = alpha * 55 / 255
+  rimA = alpha
+  highA = alpha * 140 / 255
+  hx = sx - r / 3
+  hy = sy - r / 3
+  hr = MaxI(2, r / 3)
+
+  DrawingMode(#PB_2DDrawing_AlphaBlend)
+
+  ; Soft drop shadow
+  Circle(sx + 1, sy + 2, r, RGBA(0, 0, 0, shadowA))
+
+  If isBlack
+    Circle(sx, sy, r, RGBA(18, 18, 18, alpha))
+    Circle(sx, sy, MaxI(2, r - 1), RGBA(8, 8, 8, alpha))
+    Circle(hx, hy, hr, RGBA(120, 120, 120, highA))
+    Circle(hx - 1, hy - 1, MaxI(1, hr / 2), RGBA(210, 210, 210, highA * 2 / 3))
+  Else
+    Circle(sx, sy, r, RGBA(170, 170, 170, rimA))
+    Circle(sx, sy, MaxI(2, r - 1), RGBA(250, 250, 250, alpha))
+    Circle(hx, hy, hr, RGBA(255, 255, 255, highA))
+    Circle(sx + r / 4, sy + r / 4, MaxI(2, r / 4), RGBA(200, 200, 200, alpha / 3))
+  EndIf
+
+  DrawingMode(#PB_2DDrawing_Default)
+EndProcedure
+
+; <summary>
 ; DrawWinLine
 ; </summary>
 ; <returns>Returns void.</returns>
@@ -75,8 +154,10 @@ Procedure DrawWinLine()
   Protected i.i, minIdx.i, maxIdx.i
   Protected minX.i, minY.i, maxX.i, maxY.i
   Protected sx1.i, sy1.i, sx2.i, sy2.i
-  Protected phase.i, alpha.i, softAlpha.i
+  Protected phase.i, alpha.i, softAlpha.i, coreAlpha.i
   Protected period.i = #FX_WINLINE_PERIOD_MS
+  Protected ox.i, oy.i
+  Protected thick.i = #FX_WINLINE_THICK
 
   If winLineCount < 5
     ProcedureReturn
@@ -111,22 +192,36 @@ Procedure DrawWinLine()
     If phase > period / 2
       phase = period - phase
     EndIf
-    ; Triangle 0..period/2 → alpha 90..255
-    alpha = 90 + phase * 165 / (period / 2)
+    ; Triangle 0..period/2 → alpha 120..255
+    alpha = 120 + phase * 135 / (period / 2)
   Else
-    alpha = 220
+    alpha = 230
   EndIf
 
-  softAlpha = alpha * 90 / 255
-  If softAlpha < 40
-    softAlpha = 40
+  softAlpha = alpha * 70 / 255
+  If softAlpha < 50
+    softAlpha = 50
   EndIf
+  coreAlpha = alpha
 
   DrawingMode(#PB_2DDrawing_AlphaBlend)
-  FrontColor(RGBA(255, 68, 68, softAlpha))
+
+  ; Soft thick glow via offset strokes
+  For oy = -thick To thick
+    For ox = -thick To thick
+      If ox * ox + oy * oy <= thick * thick
+        FrontColor(RGBA(255, 60, 60, softAlpha))
+        LineXY(sx1 + ox, sy1 + oy, sx2 + ox, sy2 + oy)
+      EndIf
+    Next
+  Next
+
+  ; Bright core
+  FrontColor(RGBA(255, 230, 120, coreAlpha))
   LineXY(sx1, sy1, sx2, sy2)
-  FrontColor(RGBA(255, 40, 40, alpha))
+  FrontColor(RGBA(255, 40, 40, coreAlpha))
   LineXY(sx1, sy1, sx2, sy2)
+
   DrawingMode(#PB_2DDrawing_Default)
 EndProcedure
 
@@ -143,6 +238,7 @@ Procedure DrawBoardContent()
   Protected resultText.s
   Protected font.i
   Protected fxProgress.i
+  Protected fxScale.i
   Protected fxRadius.i, fxAlpha.i
   Protected lastX.i = -1, lastY.i = -1
   Protected animatingPlace.i = #False
@@ -150,7 +246,8 @@ Procedure DrawBoardContent()
   CalculateLayout()
 
   fxProgress = PlaceFxProgress()
-  If moveCount > 0 And fxProgress < 100
+  fxScale = PlaceFxScalePct()
+  If moveCount > 0 And PlaceFxLinear() < 100
     lastX = moveX(moveCount - 1)
     lastY = moveY(moveCount - 1)
     animatingPlace = #True
@@ -216,12 +313,15 @@ Procedure DrawBoardContent()
 
   If animatingPlace
     sx = BoardPosX(lastX) : sy = BoardPosY(lastY)
-    fxRadius = MaxI(2, pieceRadius * fxProgress / 100)
-    fxAlpha = 80 + fxProgress * 175 / 100
+    fxRadius = MaxI(2, pieceRadius * fxScale / 100)
+    fxAlpha = 70 + fxProgress * 185 / 100
+    If fxAlpha > 255
+      fxAlpha = 255
+    EndIf
     DrawPieceFx(sx, sy, Bool(board(lastX, lastY) = #PLAYER_BLACK), fxRadius, fxAlpha)
   EndIf
 
-  If moveCount > 0 And fxProgress >= 70
+  If moveCount > 0 And PlaceFxLinear() >= 65
     last = moveCount - 1
     sx = BoardPosX(moveX(last)) : sy = BoardPosY(moveY(last))
     r = MaxI(4, cellSize / 7)
@@ -229,10 +329,6 @@ Procedure DrawBoardContent()
     FrontColor(RGB(255, 0, 0))
     LineXY(sx - r, sy, sx + r, sy)
     LineXY(sx, sy - r, sx, sy + r)
-  EndIf
-
-  If gameOver And winner <> #PLAYER_NONE
-    DrawWinLine()
   EndIf
 
   If gameOver
@@ -272,6 +368,11 @@ Procedure DrawBoardContent()
       DrawText((canvasW - TextWidth(resultText)) / 2, (canvasH - TextHeight(resultText)) / 2, resultText)
       FreeFont(font)
     EndIf
+  EndIf
+
+  ; Win line above dim overlay so the pulse stays readable
+  If gameOver And winner <> #PLAYER_NONE
+    DrawWinLine()
   EndIf
 EndProcedure
 
@@ -320,8 +421,9 @@ Procedure EffectsTick()
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 21
-; Folding = -
+; CursorPosition = 20
+; FirstLine = 51
+; Folding = --
 ; Optimizer
 ; EnableAsm
 ; EnableXP
