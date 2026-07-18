@@ -61,6 +61,7 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   Repeat
     NetPoll()
     AiPoll()
+    EffectsTick()
   
     Select WaitWindowEvent(10)
       Case #PB_Event_CloseWindow

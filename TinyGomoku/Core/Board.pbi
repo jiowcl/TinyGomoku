@@ -79,6 +79,8 @@ Procedure InitBoard()
   winLineCount = 0
   hoverX = -1
   hoverY = -1
+  placeFxAt = 0
+  winFxAt = 0
 
   UpdateStatus()
 EndProcedure
@@ -235,10 +237,12 @@ Procedure FinishGame(wonPlayer.i, isDraw.i)
 
   If isDraw
     winner = #PLAYER_NONE
+    winFxAt = 0
     
     SetGadgetText(#LBL_STATUS, "Draw")
   Else
     winner = wonPlayer
+    winFxAt = ElapsedMilliseconds()
     
     If winner = #PLAYER_BLACK
       SetGadgetText(#LBL_STATUS, "Black Wins")
@@ -286,6 +290,7 @@ Procedure.b ApplyMove(x.i, y.i, fromNetwork.i)
   moveY(moveCount) = y
   movePlayer(moveCount) = mover
   moveCount + 1
+  placeFxAt = ElapsedMilliseconds()
 
   If CheckWin(x, y, mover)
     FinishGame(mover, #False)
@@ -318,12 +323,14 @@ Procedure UndoOneMove()
     gameOver = #False
     winner = #PLAYER_NONE
     winLineCount = 0
+    winFxAt = 0
   EndIf
 
   moveCount - 1
   last = moveCount
   board(moveX(last), moveY(last)) = #PLAYER_NONE
   currentPlayer = movePlayer(last)
+  placeFxAt = 0
 EndProcedure
 
 ; <summary>

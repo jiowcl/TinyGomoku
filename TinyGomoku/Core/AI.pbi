@@ -440,13 +440,15 @@ Procedure AiStartGame()
 
   InitBoard()
   DrawBoard()
-  SetGadgetText(#LBL_NET, "Human (Black) vs AI (White) — " + AiDifficultyName(aiDifficulty))
+  SetGadgetText(#LBL_NET, "Human (Black) vs AI (White) - " + AiDifficultyName(aiDifficulty))
   DisableGadget(#BTN_UNDO, #False)
   UpdateStatus()
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; Folding = -
+; CursorPosition = 442
+; FirstLine = 397
+; Folding = ---
 ; Optimizer
 ; EnableAsm
 ; EnableXP

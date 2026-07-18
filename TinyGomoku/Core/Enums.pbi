@@ -57,6 +57,10 @@
 #SOUND_COMPLETED_GAME = 200
 #SOUND_NET_CONNECTION = 201
 
+; Effects
+#FX_PLACE_MS          = 220
+#FX_WINLINE_PERIOD_MS = 800
+
 ; Function Declare
 Declare.i MinI(a.i, b.i)
 Declare.i MaxI(a.i, b.i)
@@ -84,6 +88,8 @@ Declare DrawPiece(sx.i, sy.i, isBlack.i)
 Declare DrawWinLine()
 Declare DrawBoardContent()
 Declare DrawBoard()
+Declare.b EffectsActive()
+Declare EffectsTick()
 
 Declare NetSendLine(line.s)
 Declare NetReceiveData(connectionID.i)

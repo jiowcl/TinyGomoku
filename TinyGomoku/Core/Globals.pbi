@@ -17,6 +17,9 @@ Global winLineCount.i
 Global Dim winLineX.i(#MAX_WIN_POINTS - 1)
 Global Dim winLineY.i(#MAX_WIN_POINTS - 1)
 
+Global placeFxAt.i = 0
+Global winFxAt.i = 0
+
 Global cellSize.i, padding.i, pieceRadius.i
 Global gridLeft.i, gridTop.i, gridRight.i, gridBottom.i
 Global canvasW.i = #CANVAS_DEFAULT_W

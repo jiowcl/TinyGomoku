@@ -23,6 +23,51 @@ Procedure DrawPiece(sx.i, sy.i, isBlack.i)
 EndProcedure
 
 ; <summary>
+; DrawPieceFx
+; </summary>
+; <param name="sx"></param>
+; <param name="sy"></param>
+; <param name="isBlack"></param>
+; <param name="radius"></param>
+; <param name="alpha"></param>
+; <returns>Returns void.</returns>
+Procedure DrawPieceFx(sx.i, sy.i, isBlack.i, radius.i, alpha.i)
+  DrawingMode(#PB_2DDrawing_AlphaBlend)
+
+  If isBlack
+    Circle(sx, sy, radius, RGBA(0, 0, 0, alpha))
+  Else
+    Circle(sx, sy, radius, RGBA(255, 255, 255, alpha))
+  EndIf
+
+  DrawingMode(#PB_2DDrawing_Default)
+EndProcedure
+
+; <summary>
+; PlaceFxProgress
+; </summary>
+; <returns>Returns 0-100, or 100 if idle.</returns>
+Procedure.i PlaceFxProgress()
+  Protected elapsed.i
+
+  If placeFxAt = 0 Or moveCount = 0
+    ProcedureReturn 100
+  EndIf
+
+  elapsed = ElapsedMilliseconds() - placeFxAt
+
+  If elapsed >= #FX_PLACE_MS
+    ProcedureReturn 100
+  EndIf
+
+  If elapsed <= 0
+    ProcedureReturn 0
+  EndIf
+
+  ProcedureReturn elapsed * 100 / #FX_PLACE_MS
+EndProcedure
+
+; <summary>
 ; DrawWinLine
 ; </summary>
 ; <returns>Returns void.</returns>
@@ -30,6 +75,8 @@ Procedure DrawWinLine()
   Protected i.i, minIdx.i, maxIdx.i
   Protected minX.i, minY.i, maxX.i, maxY.i
   Protected sx1.i, sy1.i, sx2.i, sy2.i
+  Protected phase.i, alpha.i, softAlpha.i
+  Protected period.i = #FX_WINLINE_PERIOD_MS
 
   If winLineCount < 5
     ProcedureReturn
@@ -59,10 +106,26 @@ Procedure DrawWinLine()
   sx2 = BoardPosX(winLineX(maxIdx))
   sy2 = BoardPosY(winLineY(maxIdx))
 
+  If winFxAt > 0
+    phase = (ElapsedMilliseconds() - winFxAt) % period
+    If phase > period / 2
+      phase = period - phase
+    EndIf
+    ; Triangle 0..period/2 → alpha 90..255
+    alpha = 90 + phase * 165 / (period / 2)
+  Else
+    alpha = 220
+  EndIf
+
+  softAlpha = alpha * 90 / 255
+  If softAlpha < 40
+    softAlpha = 40
+  EndIf
+
   DrawingMode(#PB_2DDrawing_AlphaBlend)
-  FrontColor(RGBA(255, 68, 68, 80))
+  FrontColor(RGBA(255, 68, 68, softAlpha))
   LineXY(sx1, sy1, sx2, sy2)
-  FrontColor(RGB(255, 0, 0))
+  FrontColor(RGBA(255, 40, 40, alpha))
   LineXY(sx1, sy1, sx2, sy2)
   DrawingMode(#PB_2DDrawing_Default)
 EndProcedure
@@ -79,8 +142,19 @@ Procedure DrawBoardContent()
   Protected last.i
   Protected resultText.s
   Protected font.i
+  Protected fxProgress.i
+  Protected fxRadius.i, fxAlpha.i
+  Protected lastX.i = -1, lastY.i = -1
+  Protected animatingPlace.i = #False
 
   CalculateLayout()
+
+  fxProgress = PlaceFxProgress()
+  If moveCount > 0 And fxProgress < 100
+    lastX = moveX(moveCount - 1)
+    lastY = moveY(moveCount - 1)
+    animatingPlace = #True
+  EndIf
 
   Box(0, 0, canvasW, canvasH, RGB(210, 176, 126))
   Box(gridLeft - 2, gridTop - 2, gridRight - gridLeft + 5, gridBottom - gridTop + 5, RGB(198, 162, 112))
@@ -110,31 +184,44 @@ Procedure DrawBoardContent()
   Next
 
   If Not gameOver And hoverX >= 0 And hoverY >= 0 And board(hoverX, hoverY) = #PLAYER_NONE
-    If gameMode = #MODE_LOCAL Or (networkConnected And currentPlayer = myPlayer)
-      hx = BoardPosX(hoverX) : hy = BoardPosY(hoverY)
-      r = pieceRadius
-      DrawingMode(#PB_2DDrawing_AlphaBlend)
-      
-      If currentPlayer = #PLAYER_BLACK
-        Circle(hx, hy, r, RGBA(0, 0, 0, 110))
-      Else
-        Circle(hx, hy, r, RGBA(255, 255, 255, 160))
+    If gameMode = #MODE_LOCAL Or gameMode = #MODE_AI Or (networkConnected And currentPlayer = myPlayer)
+      If Not (gameMode = #MODE_AI And currentPlayer = aiPlayer)
+        hx = BoardPosX(hoverX) : hy = BoardPosY(hoverY)
+        r = pieceRadius
+        DrawingMode(#PB_2DDrawing_AlphaBlend)
+        
+        If currentPlayer = #PLAYER_BLACK
+          Circle(hx, hy, r, RGBA(0, 0, 0, 110))
+        Else
+          Circle(hx, hy, r, RGBA(255, 255, 255, 160))
+        EndIf
+        
+        DrawingMode(#PB_2DDrawing_Default)
       EndIf
-      
-      DrawingMode(#PB_2DDrawing_Default)
     EndIf
   EndIf
 
   For y = 0 To #BOARD_SIZE - 1
     For x = 0 To #BOARD_SIZE - 1
       If board(x, y) <> #PLAYER_NONE
+        If animatingPlace And x = lastX And y = lastY
+          Continue
+        EndIf
+
         sx = BoardPosX(x) : sy = BoardPosY(y)
         DrawPiece(sx, sy, Bool(board(x, y) = #PLAYER_BLACK))
       EndIf
     Next
   Next
 
-  If moveCount > 0
+  If animatingPlace
+    sx = BoardPosX(lastX) : sy = BoardPosY(lastY)
+    fxRadius = MaxI(2, pieceRadius * fxProgress / 100)
+    fxAlpha = 80 + fxProgress * 175 / 100
+    DrawPieceFx(sx, sy, Bool(board(lastX, lastY) = #PLAYER_BLACK), fxRadius, fxAlpha)
+  EndIf
+
+  If moveCount > 0 And fxProgress >= 70
     last = moveCount - 1
     sx = BoardPosX(moveX(last)) : sy = BoardPosY(moveY(last))
     r = MaxI(4, cellSize / 7)
@@ -203,6 +290,32 @@ Procedure DrawBoard()
   If StartDrawing(CanvasOutput(#CANVAS))
     DrawImage(ImageID(boardImage), 0, 0)
     StopDrawing()
+  EndIf
+EndProcedure
+
+; <summary>
+; EffectsActive
+; </summary>
+; <returns>Returns bool.</returns>
+Procedure.b EffectsActive()
+  If placeFxAt > 0 And (ElapsedMilliseconds() - placeFxAt) < #FX_PLACE_MS
+    ProcedureReturn #True
+  EndIf
+
+  If gameOver And winner <> #PLAYER_NONE And winFxAt > 0
+    ProcedureReturn #True
+  EndIf
+
+  ProcedureReturn #False
+EndProcedure
+
+; <summary>
+; EffectsTick
+; </summary>
+; <returns>Returns void.</returns>
+Procedure EffectsTick()
+  If EffectsActive()
+    DrawBoard()
   EndIf
 EndProcedure
 
