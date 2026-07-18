@@ -30,18 +30,22 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   CanvasGadget(#CANVAS, 15, 15, canvasW, canvasH)
   
   TextGadget(#LBL_NET, 15, 575, 550, 20, "Two-Player Battle in this Game")
-  ButtonGadget(#BTN_LOCAL, 15, 600, 90, 30, "Local")
-  ButtonGadget(#BTN_AI, 110, 600, 90, 30, "vs AI")
-  ComboBoxGadget(#CMB_AI_DIFF, 205, 600, 85, 30)
+  ButtonGadget(#BTN_LOCAL, 15, 600, 70, 30, "Local")
+  ButtonGadget(#BTN_AI, 90, 600, 70, 30, "vs AI")
+  ComboBoxGadget(#CMB_AI_DIFF, 165, 600, 70, 30)
   AddGadgetItem(#CMB_AI_DIFF, -1, "Easy")
   AddGadgetItem(#CMB_AI_DIFF, -1, "Normal")
   AddGadgetItem(#CMB_AI_DIFF, -1, "Hard")
   SetGadgetState(#CMB_AI_DIFF, #AI_NORMAL)
+  ComboBoxGadget(#CMB_AI_SIDE, 240, 600, 75, 30)
+  AddGadgetItem(#CMB_AI_SIDE, -1, "Black")
+  AddGadgetItem(#CMB_AI_SIDE, -1, "White")
+  SetGadgetState(#CMB_AI_SIDE, #AI_SIDE_BLACK)
   
-  TextGadget(#PB_Any, 296, 608, 30, 20, "IP:")
-  StringGadget(#STR_HOST, 330, 600, 120, 24, "127.0.0.1")
-  TextGadget(#PB_Any, 475, 608, 30, 24, "Port:")
-  StringGadget(#STR_PORT, 510, 600, 55, 24, Str(#NET_PORT_DEFAULT))
+  TextGadget(#PB_Any, 325, 608, 25, 20, "IP:")
+  StringGadget(#STR_HOST, 350, 600, 105, 24, "127.0.0.1")
+  TextGadget(#PB_Any, 460, 608, 30, 24, "Port:")
+  StringGadget(#STR_PORT, 495, 600, 70, 24, Str(#NET_PORT_DEFAULT))
   
   ButtonGadget(#BTN_HOST, 15, 634, 270, 30, "Create a Room")
   ButtonGadget(#BTN_JOIN, 295, 634, 270, 30, "Join Room")
@@ -78,7 +82,14 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
           Case #CMB_AI_DIFF
             AiSyncDifficultyFromUi()
             If gameMode = #MODE_AI
-              SetGadgetText(#LBL_NET, "Human (Black) vs AI (White) — " + AiDifficultyName(aiDifficulty))
+              AiUpdateModeLabel()
+            EndIf
+
+          Case #CMB_AI_SIDE
+            AiSyncSideFromUi()
+            If gameMode = #MODE_AI
+              ; Side applies on Restart / vs AI; update preference label hint only.
+              SetGadgetText(#LBL_NET, "Side preference: " + GetGadgetText(#CMB_AI_SIDE) + " (Restart to apply) — " + AiDifficultyName(aiDifficulty))
             EndIf
   
           Case #BTN_HOST
@@ -89,8 +100,18 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   
           Case #BTN_RESTART
             AiCancelPending()
+            If gameMode = #MODE_AI
+              AiSyncDifficultyFromUi()
+              AiSyncSideFromUi()
+              AiApplySideSettings()
+            EndIf
             InitBoard()
             DrawBoard()
+            If gameMode = #MODE_AI
+              AiUpdateModeLabel()
+              UpdateStatus()
+              AiEnsureTurn()
+            EndIf
             
             If gameMode <> #MODE_LOCAL And gameMode <> #MODE_AI And networkConnected
               NetSendLine("RESET")

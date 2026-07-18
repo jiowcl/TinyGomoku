@@ -24,6 +24,7 @@
 #LBL_NET          = 10
 #BTN_AI           = 11
 #CMB_AI_DIFF      = 12
+#CMB_AI_SIDE      = 13
 
 ; Piece
 #PLAYER_NONE      = 0
@@ -40,6 +41,8 @@
 #AI_EASY          = 0
 #AI_NORMAL        = 1
 #AI_HARD          = 2
+#AI_SIDE_BLACK    = 0
+#AI_SIDE_WHITE    = 1
 #AI_MOVE_DELAY_MS = 350
 #AI_MAX_CANDIDATES = 64
 
@@ -103,6 +106,10 @@ Declare.b AiFindBestMove()
 Declare.i AiMoveDelay()
 Declare.s AiDifficultyName(level.i)
 Declare AiSyncDifficultyFromUi()
+Declare AiSyncSideFromUi()
+Declare AiApplySideSettings()
+Declare AiUpdateModeLabel()
+Declare AiEnsureTurn()
 Declare AiMakeMove()
 Declare AiScheduleMove()
 Declare AiPoll()

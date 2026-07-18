@@ -72,9 +72,9 @@ Procedure UpdateStatus()
 
   If gameMode = #MODE_AI
     If currentPlayer = myPlayer
-      SetGadgetText(#LBL_STATUS, "Your Turn (Black)")
+      SetGadgetText(#LBL_STATUS, "Your Turn (" + PlayerName(myPlayer) + ")")
     Else
-      SetGadgetText(#LBL_STATUS, "AI is Thinking… (White)")
+      SetGadgetText(#LBL_STATUS, "AI is Thinking… (" + PlayerName(aiPlayer) + ")")
     EndIf
     
     ProcedureReturn
@@ -119,6 +119,7 @@ Procedure SetOnlineControlsEnabled(enabled.i)
   DisableGadget(#BTN_LOCAL, state)
   DisableGadget(#BTN_AI, state)
   DisableGadget(#CMB_AI_DIFF, state)
+  DisableGadget(#CMB_AI_SIDE, state)
   DisableGadget(#BTN_HOST, state)
   DisableGadget(#BTN_JOIN, state)
   DisableGadget(#STR_HOST, state)
@@ -146,6 +147,7 @@ Procedure LoadUIFont()
     SetGadgetFont(#BTN_LOCAL, FontID(uiFont))
     SetGadgetFont(#BTN_AI, FontID(uiFont))
     SetGadgetFont(#CMB_AI_DIFF, FontID(uiFont))
+    SetGadgetFont(#CMB_AI_SIDE, FontID(uiFont))
     SetGadgetFont(#BTN_HOST, FontID(uiFont))
     SetGadgetFont(#BTN_JOIN, FontID(uiFont))
     SetGadgetFont(#STR_HOST, FontID(uiFont))

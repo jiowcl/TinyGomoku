@@ -34,6 +34,7 @@ Global gameMode.i = #MODE_LOCAL
 Global myPlayer.i = #PLAYER_NONE
 Global aiPlayer.i = #PLAYER_WHITE
 Global aiDifficulty.i = #AI_NORMAL
+Global aiHumanSide.i = #AI_SIDE_BLACK
 Global aiMoveX.i, aiMoveY.i
 Global aiPending.i = #False
 Global aiPendingAt.i = 0

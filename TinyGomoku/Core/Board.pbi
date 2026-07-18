@@ -363,6 +363,7 @@ Procedure UndoMove()
   EndIf
 
   UpdateStatus()
+  AiEnsureTurn()
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)

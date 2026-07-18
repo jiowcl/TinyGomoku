@@ -238,6 +238,53 @@ Procedure AiSyncDifficultyFromUi()
 EndProcedure
 
 ; <summary>
+; AiSyncSideFromUi
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiSyncSideFromUi()
+  Protected state.i = GetGadgetState(#CMB_AI_SIDE)
+
+  If state < #AI_SIDE_BLACK Or state > #AI_SIDE_WHITE
+    state = #AI_SIDE_BLACK
+    SetGadgetState(#CMB_AI_SIDE, state)
+  EndIf
+
+  aiHumanSide = state
+EndProcedure
+
+; <summary>
+; AiApplySideSettings
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiApplySideSettings()
+  If aiHumanSide = #AI_SIDE_WHITE
+    myPlayer = #PLAYER_WHITE
+    aiPlayer = #PLAYER_BLACK
+  Else
+    myPlayer = #PLAYER_BLACK
+    aiPlayer = #PLAYER_WHITE
+  EndIf
+EndProcedure
+
+; <summary>
+; AiUpdateModeLabel
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiUpdateModeLabel()
+  SetGadgetText(#LBL_NET, "Human (" + PlayerName(myPlayer) + ") vs AI (" + PlayerName(aiPlayer) + ") - " + AiDifficultyName(aiDifficulty))
+EndProcedure
+
+; <summary>
+; AiEnsureTurn
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiEnsureTurn()
+  If gameMode = #MODE_AI And Not gameOver And currentPlayer = aiPlayer And Not aiPending
+    AiScheduleMove()
+  EndIf
+EndProcedure
+
+; <summary>
 ; AiFindBestMove
 ; </summary>
 ; <returns>Returns bool.</returns>
@@ -433,16 +480,17 @@ Procedure AiStartGame()
   NetDisconnect()
 
   AiSyncDifficultyFromUi()
+  AiSyncSideFromUi()
+  AiApplySideSettings()
   gameMode = #MODE_AI
-  myPlayer = #PLAYER_BLACK
-  aiPlayer = #PLAYER_WHITE
   AiCancelPending()
 
   InitBoard()
   DrawBoard()
-  SetGadgetText(#LBL_NET, "Human (Black) vs AI (White) - " + AiDifficultyName(aiDifficulty))
+  AiUpdateModeLabel()
   DisableGadget(#BTN_UNDO, #False)
   UpdateStatus()
+  AiEnsureTurn()
 EndProcedure
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
