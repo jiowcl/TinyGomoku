@@ -15,6 +15,8 @@ If InitSound() = 0
   End
 EndIf
 
+RandomSeed(ElapsedMilliseconds())
+
 IncludeFile "./Core/Enums.pbi"
 IncludeFile "./Core/Globals.pbi"
 IncludeFile "./Core/Helpers.pbi"
@@ -28,8 +30,13 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   CanvasGadget(#CANVAS, 15, 15, canvasW, canvasH)
   
   TextGadget(#LBL_NET, 15, 575, 550, 20, "Two-Player Battle in this Game")
-  ButtonGadget(#BTN_LOCAL, 15, 600, 130, 30, "Local")
-  ButtonGadget(#BTN_AI, 150, 600, 130, 30, "vs AI")
+  ButtonGadget(#BTN_LOCAL, 15, 600, 90, 30, "Local")
+  ButtonGadget(#BTN_AI, 110, 600, 90, 30, "vs AI")
+  ComboBoxGadget(#CMB_AI_DIFF, 205, 600, 85, 30)
+  AddGadgetItem(#CMB_AI_DIFF, -1, "Easy")
+  AddGadgetItem(#CMB_AI_DIFF, -1, "Normal")
+  AddGadgetItem(#CMB_AI_DIFF, -1, "Hard")
+  SetGadgetState(#CMB_AI_DIFF, #AI_NORMAL)
   
   TextGadget(#PB_Any, 296, 608, 30, 20, "IP:")
   StringGadget(#STR_HOST, 330, 600, 120, 24, "127.0.0.1")
@@ -66,6 +73,12 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
 
           Case #BTN_AI
             AiStartGame()
+
+          Case #CMB_AI_DIFF
+            AiSyncDifficultyFromUi()
+            If gameMode = #MODE_AI
+              SetGadgetText(#LBL_NET, "Human (Black) vs AI (White) — " + AiDifficultyName(aiDifficulty))
+            EndIf
   
           Case #BTN_HOST
             NetStartHost()

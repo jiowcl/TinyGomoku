@@ -103,20 +103,34 @@ Procedure.i AiDirectionScore(x.i, y.i, dx.i, dy.i, player.i)
     If openEnds = 2
       ProcedureReturn 50000
     ElseIf openEnds = 1
+      If aiDifficulty = #AI_HARD
+        ProcedureReturn 8000
+      EndIf
       ProcedureReturn 5000
     EndIf
   EndIf
 
   If count = 3
     If openEnds = 2
+      If aiDifficulty = #AI_HARD
+        ProcedureReturn 3500
+      ElseIf aiDifficulty = #AI_EASY
+        ProcedureReturn 800
+      EndIf
       ProcedureReturn 2000
     ElseIf openEnds = 1
+      If aiDifficulty = #AI_HARD
+        ProcedureReturn 400
+      EndIf
       ProcedureReturn 200
     EndIf
   EndIf
 
   If count = 2
     If openEnds = 2
+      If aiDifficulty = #AI_HARD
+        ProcedureReturn 80
+      EndIf
       ProcedureReturn 50
     ElseIf openEnds = 1
       ProcedureReturn 10
@@ -178,6 +192,52 @@ Procedure.b AiHasNeighbor(x.i, y.i, radius.i)
 EndProcedure
 
 ; <summary>
+; AiDifficultyName
+; </summary>
+; <param name="level"></param>
+; <returns>Returns string.</returns>
+Procedure.s AiDifficultyName(level.i)
+  Select level
+    Case #AI_EASY
+      ProcedureReturn "Easy"
+    Case #AI_HARD
+      ProcedureReturn "Hard"
+    Default
+      ProcedureReturn "Normal"
+  EndSelect
+EndProcedure
+
+; <summary>
+; AiMoveDelay
+; </summary>
+; <returns>Returns integer.</returns>
+Procedure.i AiMoveDelay()
+  Select aiDifficulty
+    Case #AI_EASY
+      ProcedureReturn 250
+    Case #AI_HARD
+      ProcedureReturn 500
+    Default
+      ProcedureReturn #AI_MOVE_DELAY_MS
+  EndSelect
+EndProcedure
+
+; <summary>
+; AiSyncDifficultyFromUi
+; </summary>
+; <returns>Returns void.</returns>
+Procedure AiSyncDifficultyFromUi()
+  Protected state.i = GetGadgetState(#CMB_AI_DIFF)
+
+  If state < #AI_EASY Or state > #AI_HARD
+    state = #AI_NORMAL
+    SetGadgetState(#CMB_AI_DIFF, state)
+  EndIf
+
+  aiDifficulty = state
+EndProcedure
+
+; <summary>
 ; AiFindBestMove
 ; </summary>
 ; <returns>Returns bool.</returns>
@@ -189,6 +249,25 @@ Procedure.b AiFindBestMove()
   Protected opponent.i
   Protected found.i = #False
   Protected center.i = #BOARD_SIZE / 2
+  Protected radius.i = 2
+  Protected defensePct.i = 95
+  Protected Dim candX.i(#AI_MAX_CANDIDATES - 1)
+  Protected Dim candY.i(#AI_MAX_CANDIDATES - 1)
+  Protected candCount.i = 0
+  Protected threshold.i
+  Protected pick.i
+
+  Select aiDifficulty
+    Case #AI_EASY
+      radius = 1
+      defensePct = 55
+    Case #AI_HARD
+      radius = 2
+      defensePct = 105
+    Default
+      radius = 2
+      defensePct = 95
+  EndSelect
 
   If moveCount = 0
     aiMoveX = center
@@ -204,7 +283,7 @@ Procedure.b AiFindBestMove()
         Continue
       EndIf
 
-      If Not AiHasNeighbor(x, y, 2)
+      If Not AiHasNeighbor(x, y, radius)
         Continue
       EndIf
 
@@ -216,7 +295,7 @@ Procedure.b AiFindBestMove()
       ElseIf attack >= 1000000
         score = attack
       Else
-        score = attack + (defense * 95 / 100)
+        score = attack + (defense * defensePct / 100)
       EndIf
 
       If score > bestScore
@@ -224,7 +303,7 @@ Procedure.b AiFindBestMove()
         aiMoveX = x
         aiMoveY = y
         found = #True
-      ElseIf score = bestScore And found
+      ElseIf score = bestScore And found And aiDifficulty <> #AI_EASY
         If Abs(x - center) + Abs(y - center) < Abs(aiMoveX - center) + Abs(aiMoveY - center)
           aiMoveX = x
           aiMoveY = y
@@ -233,7 +312,53 @@ Procedure.b AiFindBestMove()
     Next
   Next
 
-  ProcedureReturn found
+  If found = #False
+    ProcedureReturn #False
+  EndIf
+
+  If aiDifficulty = #AI_EASY
+    threshold = bestScore * 45 / 100
+    If threshold < 1 And bestScore > 0
+      threshold = 1
+    EndIf
+
+    For y = 0 To #BOARD_SIZE - 1
+      For x = 0 To #BOARD_SIZE - 1
+        If board(x, y) <> #PLAYER_NONE
+          Continue
+        EndIf
+
+        If Not AiHasNeighbor(x, y, radius)
+          Continue
+        EndIf
+
+        attack = AiEvaluateCell(x, y, aiPlayer)
+        defense = AiEvaluateCell(x, y, opponent)
+
+        If defense >= 1000000
+          score = defense
+        ElseIf attack >= 1000000
+          score = attack
+        Else
+          score = attack + (defense * defensePct / 100)
+        EndIf
+
+        If score >= threshold And candCount < #AI_MAX_CANDIDATES
+          candX(candCount) = x
+          candY(candCount) = y
+          candCount + 1
+        EndIf
+      Next
+    Next
+
+    If candCount > 0
+      pick = Random(candCount - 1)
+      aiMoveX = candX(pick)
+      aiMoveY = candY(pick)
+    EndIf
+  EndIf
+
+  ProcedureReturn #True
 EndProcedure
 
 ; <summary>
@@ -255,7 +380,7 @@ Procedure AiScheduleMove()
   EndIf
 
   aiPending = #True
-  aiPendingAt = ElapsedMilliseconds() + #AI_MOVE_DELAY_MS
+  aiPendingAt = ElapsedMilliseconds() + AiMoveDelay()
   UpdateStatus()
 EndProcedure
 
@@ -307,6 +432,7 @@ EndProcedure
 Procedure AiStartGame()
   NetDisconnect()
 
+  AiSyncDifficultyFromUi()
   gameMode = #MODE_AI
   myPlayer = #PLAYER_BLACK
   aiPlayer = #PLAYER_WHITE
@@ -314,7 +440,7 @@ Procedure AiStartGame()
 
   InitBoard()
   DrawBoard()
-  SetGadgetText(#LBL_NET, "Human (Black) vs AI (White)")
+  SetGadgetText(#LBL_NET, "Human (Black) vs AI (White) — " + AiDifficultyName(aiDifficulty))
   DisableGadget(#BTN_UNDO, #False)
   UpdateStatus()
 EndProcedure

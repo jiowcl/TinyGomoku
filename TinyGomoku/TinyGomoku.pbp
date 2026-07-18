@@ -8,20 +8,20 @@
   <section name="data">
     <explorer view="C:\ProgramData\PureBasic\Examples\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2026-07-18 19:10" user="使用者" host="DESKTOP-K1RBCTS"/>
+    <lastopen date="2026-07-18 19:20" user="使用者" host="DESKTOP-K1RBCTS"/>
   </section>
   <section name="files">
     <file name="Core\Enums.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="1" panelstate="++"/>
-      <fingerprint md5="e74fa61a3152891ceecc71077f64932e"/>
+      <fingerprint md5="94f6d22d05c9b370c8f9adcc13d91ea3"/>
     </file>
     <file name="Core\Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="2" panelstate="++"/>
-      <fingerprint md5="c646e386ec83bb8d665f76e42c9e9191"/>
+      <fingerprint md5="962a9b65ff5dec3e236446e1a5179c24"/>
     </file>
     <file name="TinyGomoku.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="3" panelstate="+"/>
-      <fingerprint md5="7cd9ff6e96f91114aba48bf6050d6cbd"/>
+      <fingerprint md5="418455e4926459957f96df1c5e2088da"/>
     </file>
     <file name="Core\Board.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="4" panelstate="++"/>
@@ -33,7 +33,7 @@
     </file>
     <file name="Core\Globals.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="6" panelstate="++"/>
-      <fingerprint md5="c775a1cdf7c7c2a880ebff82f83ba835"/>
+      <fingerprint md5="7fbf029e2c57655f3a6e4ec3f8cd5ed4"/>
     </file>
     <file name="Core\Input.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="7" panelstate="++"/>
@@ -45,7 +45,7 @@
     </file>
     <file name="Core\AI.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
-      <fingerprint md5="4b1232a38a44460be9793ea751da50c7"/>
+      <fingerprint md5="2d1d40d10e8e8756a81fe8e0f66d3005"/>
     </file>
   </section>
   <section name="targets">

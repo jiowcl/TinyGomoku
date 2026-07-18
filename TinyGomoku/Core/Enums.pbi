@@ -23,6 +23,7 @@
 #STR_PORT         = 9
 #LBL_NET          = 10
 #BTN_AI           = 11
+#CMB_AI_DIFF      = 12
 
 ; Piece
 #PLAYER_NONE      = 0
@@ -36,7 +37,11 @@
 #MODE_AI          = 3
 
 ; AI
+#AI_EASY          = 0
+#AI_NORMAL        = 1
+#AI_HARD          = 2
 #AI_MOVE_DELAY_MS = 350
+#AI_MAX_CANDIDATES = 64
 
 ; Network
 #NET_PORT_DEFAULT = 8765
@@ -89,6 +94,9 @@ Declare NetStartLocal()
 Declare NetPoll()
 
 Declare.b AiFindBestMove()
+Declare.i AiMoveDelay()
+Declare.s AiDifficultyName(level.i)
+Declare AiSyncDifficultyFromUi()
 Declare AiMakeMove()
 Declare AiScheduleMove()
 Declare AiPoll()
