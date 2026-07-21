@@ -6,8 +6,8 @@
 ; <summary>
 ; TryPlaceAt
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
 ; <returns>Returns void.</returns>
 Procedure TryPlaceAt(x.i, y.i)
   If ApplyMove(x, y, #False)

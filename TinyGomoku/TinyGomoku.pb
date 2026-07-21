@@ -26,6 +26,7 @@ IncludeFile "./Core/Network.pbi"
 IncludeFile "./Core/AI.pbi"
 IncludeFile "./Core/Input.pbi"
 
+; Ui
 If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl", #PB_Window_SystemMenu | #PB_Window_MinimizeGadget | #PB_Window_ScreenCentered)
   CanvasGadget(#CANVAS, 15, 15, canvasW, canvasH)
   

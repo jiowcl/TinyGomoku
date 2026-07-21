@@ -3,10 +3,13 @@
 ;  Code released under the MIT license.
 ;--------------------------------------------------------------------------------------------
 
+; This is a simple local area network (LAN) multiplayer game.
+; TODO: Add servers and online multiplayer system.
+
 ; <summary>
 ; NetSendLine
 ; </summary>
-; <param name="line"></param>
+; <param name="line">string</param>
 ; <returns>Returns void.</returns>
 Procedure NetSendLine(line.s)
   line + #LF$
@@ -21,7 +24,7 @@ EndProcedure
 ; <summary>
 ; NetReceiveData
 ; </summary>
-; <param name="connectionID"></param>
+; <param name="connectionID">integer</param>
 ; <returns>Returns void.</returns>
 Procedure NetReceiveData(connectionID.i)
   Protected *buf

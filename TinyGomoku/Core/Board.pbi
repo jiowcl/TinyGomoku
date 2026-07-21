@@ -88,8 +88,8 @@ EndProcedure
 ; <summary>
 ; ScreenToBoard
 ; </summary>
-; <param name="sx"></param>
-; <param name="sy"></param>
+; <param name="sx">integer</param>
+; <param name="sy">integer</param>
 ; <returns>Returns void.</returns>
 Procedure ScreenToBoard(sx.i, sy.i)
   Protected fx.i = sx - gridLeft
@@ -115,7 +115,7 @@ EndProcedure
 ; <summary>
 ; BoardPosX
 ; </summary>
-; <param name="bx"></param>
+; <param name="bx">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i BoardPosX(bx.i)
   ProcedureReturn gridLeft + bx * cellSize
@@ -124,7 +124,7 @@ EndProcedure
 ; <summary>
 ; BoardPosY
 ; </summary>
-; <param name="by"></param>
+; <param name="by">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i BoardPosY(by.i)
   ProcedureReturn gridTop + by * cellSize
@@ -133,11 +133,11 @@ EndProcedure
 ; <summary>
 ; CheckDirection
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="dx"></param>
-; <param name="dy"></param>
-; <param name="player"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="dx">integer</param>
+; <param name="dy">integer</param>
+; <param name="player">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i CheckDirection(x.i, y.i, dx.i, dy.i, player.i)
   Protected nx.i, ny.i
@@ -184,9 +184,9 @@ EndProcedure
 ; <summary>
 ; CheckWin
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="player"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="player">integer</param>
 ; <returns>Returns bool.</returns>
 Procedure.b CheckWin(x.i, y.i, player.i)
   If CheckDirection(x, y, 1, 0, player) >= 5
@@ -229,8 +229,8 @@ EndProcedure
 ; <summary>
 ; CheckDraw
 ; </summary>
-; <param name="wonPlayer"></param>
-; <param name="isDraw"></param>
+; <param name="wonPlayer">integer</param>
+; <param name="isDraw">integer</param>
 ; <returns>Returns void.</returns>
 Procedure FinishGame(wonPlayer.i, isDraw.i)
   gameOver = #True
@@ -259,9 +259,9 @@ EndProcedure
 ; <summary>
 ; ApplyMove
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="fromNetwork"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="fromNetwork">integer</param>
 ; <returns>Returns bool.</returns>
 Procedure.b ApplyMove(x.i, y.i, fromNetwork.i)
   Protected mover.i

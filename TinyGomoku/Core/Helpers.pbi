@@ -6,8 +6,8 @@
 ; <summary>
 ; MinI
 ; </summary>
-; <param name="a"></param>
-; <param name="b"></param>
+; <param name="a">integer</param>
+; <param name="b">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i MinI(a.i, b.i)
   If a < b
@@ -20,8 +20,8 @@ EndProcedure
 ; <summary>
 ; MaxI
 ; </summary>
-; <param name="a"></param>
-; <param name="b"></param>
+; <param name="a">integer</param>
+; <param name="b">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i MaxI(a.i, b.i)
   If a > b
@@ -34,7 +34,7 @@ EndProcedure
 ; <summary>
 ; PlayerName
 ; </summary>
-; <param name="player"></param>
+; <param name="player">integer</param>
 ; <returns>Returns string.</returns>
 Procedure.s PlayerName(player.i)
   If player = #PLAYER_BLACK
@@ -47,7 +47,7 @@ EndProcedure
 ; <summary>
 ; PlayerStatusText
 ; </summary>
-; <param name="player"></param>
+; <param name="player">integer</param>
 ; <returns>Returns string.</returns>
 Procedure.s PlayerStatusText(player.i)
   ProcedureReturn PlayerName(player) + " Plays the Pieces"
@@ -105,7 +105,7 @@ EndProcedure
 ; <summary>
 ; SetOnlineControlsEnabled
 ; </summary>
-; <param name="enabled"></param>
+; <param name="enabled">integer</param>
 ; <returns>Returns void.</returns>
 Procedure SetOnlineControlsEnabled(enabled.i)
   Protected state.i

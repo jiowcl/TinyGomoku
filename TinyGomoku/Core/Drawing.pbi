@@ -86,9 +86,9 @@ EndProcedure
 ; <summary>
 ; DrawPiece
 ; </summary>
-; <param name="sx"></param>
-; <param name="sy"></param>
-; <param name="isBlack"></param>
+; <param name="sx">integer</param>
+; <param name="sy">integer</param>
+; <param name="isBlack">integer</param>
 ; <returns>Returns void.</returns>
 Procedure DrawPiece(sx.i, sy.i, isBlack.i)
   DrawPieceFx(sx, sy, isBlack, pieceRadius, 255)
@@ -98,11 +98,11 @@ EndProcedure
 ; DrawPieceFx
 ; Soft shadow + body + rim + highlight.
 ; </summary>
-; <param name="sx"></param>
-; <param name="sy"></param>
-; <param name="isBlack"></param>
-; <param name="radius"></param>
-; <param name="alpha"></param>
+; <param name="sx">integer</param>
+; <param name="sy">integer</param>
+; <param name="isBlack">integer</param>
+; <param name="radius">integer</param>
+; <param name="alpha">integer</param>
 ; <returns>Returns void.</returns>
 Procedure DrawPieceFx(sx.i, sy.i, isBlack.i, radius.i, alpha.i)
   Protected r.i = radius

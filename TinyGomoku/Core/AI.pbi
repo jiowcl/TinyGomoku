@@ -6,11 +6,11 @@
 ; <summary>
 ; AiCountLine
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="dx"></param>
-; <param name="dy"></param>
-; <param name="player"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="dx">integer</param>
+; <param name="dy">integer</param>
+; <param name="player">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i AiCountLine(x.i, y.i, dx.i, dy.i, player.i)
   Protected nx.i, ny.i
@@ -41,11 +41,11 @@ EndProcedure
 ; <summary>
 ; AiCountOpenEnds
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="dx"></param>
-; <param name="dy"></param>
-; <param name="player"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="dx">integer</param>
+; <param name="dy">integer</param>
+; <param name="player">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i AiCountOpenEnds(x.i, y.i, dx.i, dy.i, player.i)
   Protected nx.i, ny.i
@@ -82,11 +82,11 @@ EndProcedure
 ; <summary>
 ; AiDirectionScore
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="dx"></param>
-; <param name="dy"></param>
-; <param name="player"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="dx">integer</param>
+; <param name="dy">integer</param>
+; <param name="player">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i AiDirectionScore(x.i, y.i, dx.i, dy.i, player.i)
   Protected count.i
@@ -143,9 +143,9 @@ EndProcedure
 ; <summary>
 ; AiEvaluateCell
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="player"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="player">integer</param>
 ; <returns>Returns integer.</returns>
 Procedure.i AiEvaluateCell(x.i, y.i, player.i)
   Protected score.i
@@ -163,9 +163,9 @@ EndProcedure
 ; <summary>
 ; AiHasNeighbor
 ; </summary>
-; <param name="x"></param>
-; <param name="y"></param>
-; <param name="radius"></param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="radius">integer</param>
 ; <returns>Returns bool.</returns>
 Procedure.b AiHasNeighbor(x.i, y.i, radius.i)
   Protected nx.i, ny.i
@@ -194,7 +194,7 @@ EndProcedure
 ; <summary>
 ; AiDifficultyName
 ; </summary>
-; <param name="level"></param>
+; <param name="level">integer</param>
 ; <returns>Returns string.</returns>
 Procedure.s AiDifficultyName(level.i)
   Select level
