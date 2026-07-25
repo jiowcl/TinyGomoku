@@ -19,6 +19,7 @@ Global Dim winLineY.i(#MAX_WIN_POINTS - 1)
 
 Global placeFxAt.i = 0
 Global winFxAt.i = 0
+Global resultFxAt.i = 0
 
 Global cellSize.i, padding.i, pieceRadius.i
 Global gridLeft.i, gridTop.i, gridRight.i, gridBottom.i
@@ -47,10 +48,12 @@ Global soundPath.s = "./Sound/"
 
 ; Sounds
 LoadSound(#SOUND_PUTDOWN_PIECE, soundPath + "100.wav")
+LoadSound(#SOUND_PUTDOWN_PIECE_4, soundPath + "101.wav")
 LoadSound(#SOUND_COMPLETED_GAME, soundPath + "200.wav")
 LoadSound(#SOUND_NET_CONNECTION, soundPath + "201.wav")
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 41
+; CursorPosition = 50
+; FirstLine = 3
 ; Optimizer
 ; EnableAsm
 ; EnableXP

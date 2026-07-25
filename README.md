@@ -32,8 +32,9 @@ Open `TinyGomoku/TinyGomoku.pbp` in PureBasic, or compile `TinyGomoku/TinyGomoku
 
 - Local two-player battle
 - Local vs AI (Easy / Normal / Hard, choose Black or White)
+- AI difficulty and side preferences are remembered
 - LAN two-player battle (TCP)
-- Place animation and win-line pulse effects
+- Place animation, win-line pulse, and result text fade-in
 - Undo / Restart
 
 ## License
@@ -44,9 +45,7 @@ Code released under the MIT license.
 
 ## TODO
 
-- Persist AI difficulty / side preferences
 - Optional victory particle effects
-- Stronger Hard AI (deeper search)
 
 ## Donation
 

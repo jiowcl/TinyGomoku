@@ -141,6 +141,69 @@ Procedure.i AiDirectionScore(x.i, y.i, dx.i, dy.i, player.i)
 EndProcedure
 
 ; <summary>
+; AiThreatComboBonus
+; Detects live-four / double open-three style threats. Stone must already be on board.
+; </summary>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="player">integer</param>
+; <returns>Returns integer.</returns>
+Procedure.i AiThreatComboBonus(x.i, y.i, player.i)
+  Protected open3.i, live4.i, rush4.i
+  Protected count.i, openEnds.i
+  Protected d.i
+  Protected dx.i, dy.i
+
+  open3 = 0
+  live4 = 0
+  rush4 = 0
+
+  For d = 0 To 3
+    Select d
+      Case 0 : dx = 1 : dy = 0
+      Case 1 : dx = 0 : dy = 1
+      Case 2 : dx = 1 : dy = 1
+      Default : dx = 1 : dy = -1
+    EndSelect
+
+    count = AiCountLine(x, y, dx, dy, player)
+    openEnds = AiCountOpenEnds(x, y, dx, dy, player)
+
+    If count >= 5
+      ProcedureReturn 0
+    EndIf
+
+    If count = 4
+      If openEnds = 2
+        live4 + 1
+      ElseIf openEnds = 1
+        rush4 + 1
+      EndIf
+    ElseIf count = 3 And openEnds = 2
+      open3 + 1
+    EndIf
+  Next
+
+  If live4 >= 1
+    ProcedureReturn 60000
+  EndIf
+
+  If open3 >= 2
+    ProcedureReturn 50000
+  EndIf
+
+  If rush4 >= 1 And open3 >= 1
+    ProcedureReturn 45000
+  EndIf
+
+  If rush4 >= 2
+    ProcedureReturn 40000
+  EndIf
+
+  ProcedureReturn 0
+EndProcedure
+
+; <summary>
 ; AiEvaluateCell
 ; </summary>
 ; <param name="x">integer</param>
@@ -155,9 +218,45 @@ Procedure.i AiEvaluateCell(x.i, y.i, player.i)
   score + AiDirectionScore(x, y, 0, 1, player)
   score + AiDirectionScore(x, y, 1, 1, player)
   score + AiDirectionScore(x, y, 1, -1, player)
+
+  If aiDifficulty = #AI_HARD
+    score + AiThreatComboBonus(x, y, player)
+  EndIf
+
   board(x, y) = #PLAYER_NONE
 
   ProcedureReturn score
+EndProcedure
+
+; <summary>
+; AiBestReplyScore
+; Best immediate threat score for player on the current board.
+; </summary>
+; <param name="player">integer</param>
+; <returns>Returns integer.</returns>
+Procedure.i AiBestReplyScore(player.i)
+  Protected x.i, y.i
+  Protected best.i = 0
+  Protected score.i
+
+  For y = 0 To #BOARD_SIZE - 1
+    For x = 0 To #BOARD_SIZE - 1
+      If board(x, y) <> #PLAYER_NONE
+        Continue
+      EndIf
+
+      If Not AiHasNeighbor(x, y, 2)
+        Continue
+      EndIf
+
+      score = AiEvaluateCell(x, y, player)
+      If score > best
+        best = score
+      EndIf
+    Next
+  Next
+
+  ProcedureReturn best
 EndProcedure
 
 ; <summary>
@@ -235,6 +334,7 @@ Procedure AiSyncDifficultyFromUi()
   EndIf
 
   aiDifficulty = state
+  SaveAiPrefs()
 EndProcedure
 
 ; <summary>
@@ -250,6 +350,7 @@ Procedure AiSyncSideFromUi()
   EndIf
 
   aiHumanSide = state
+  SaveAiPrefs()
 EndProcedure
 
 ; <summary>
@@ -303,14 +404,15 @@ Procedure.b AiFindBestMove()
   Protected candCount.i = 0
   Protected threshold.i
   Protected pick.i
+  Protected oppThreat.i
 
   Select aiDifficulty
     Case #AI_EASY
       radius = 1
       defensePct = 55
     Case #AI_HARD
-      radius = 2
-      defensePct = 105
+      radius = 3
+      defensePct = 110
     Default
       radius = 2
       defensePct = 95
@@ -341,6 +443,22 @@ Procedure.b AiFindBestMove()
         score = defense
       ElseIf attack >= 1000000
         score = attack
+      ElseIf aiDifficulty = #AI_HARD
+        board(x, y) = aiPlayer
+        oppThreat = AiBestReplyScore(opponent)
+        board(x, y) = #PLAYER_NONE
+
+        If oppThreat >= 1000000
+          ; Giving the opponent an immediate win is never acceptable.
+          score = -1000000 + attack
+        Else
+          score = attack + (defense * defensePct / 100)
+          If oppThreat >= 45000
+            score - (oppThreat / 2)
+          ElseIf oppThreat >= 20000
+            score - (oppThreat / 4)
+          EndIf
+        EndIf
       Else
         score = attack + (defense * defensePct / 100)
       EndIf
@@ -443,10 +561,6 @@ Procedure AiMakeMove()
   If AiFindBestMove()
     ApplyMove(aiMoveX, aiMoveY, #False)
     DrawBoard()
-
-    If IsSound(#SOUND_PUTDOWN_PIECE) <> 0
-      PlaySound(#SOUND_PUTDOWN_PIECE)
-    EndIf
   EndIf
 EndProcedure
 

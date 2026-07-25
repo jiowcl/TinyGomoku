@@ -242,6 +242,8 @@ Procedure DrawBoardContent()
   Protected fxRadius.i, fxAlpha.i
   Protected lastX.i = -1, lastY.i = -1
   Protected animatingPlace.i = #False
+  Protected resultProg.i, resultElapsed.i
+  Protected resultAlpha.i, resultShadow.i, resultRise.i
 
   CalculateLayout()
 
@@ -344,6 +346,18 @@ Procedure DrawBoardContent()
       resultText = "Draw"
     EndIf
 
+    resultProg = 100
+    If resultFxAt > 0
+      resultElapsed = ElapsedMilliseconds() - resultFxAt
+      If resultElapsed < #FX_RESULT_MS
+        resultProg = EaseOutQuad100(resultElapsed * 100 / #FX_RESULT_MS)
+      EndIf
+    EndIf
+
+    resultAlpha = resultProg * 255 / 100
+    resultShadow = resultProg * 140 / 100
+    resultRise = (100 - resultProg) * 10 / 100
+
     font = LoadFont(#PB_Any, "Microsoft JhengHei UI", MaxI(20, cellSize * 4 / 5), #PB_Font_HighQuality)
     
     If font = 0
@@ -353,19 +367,19 @@ Procedure DrawBoardContent()
     If font
       DrawingFont(FontID(font))
       DrawingMode(#PB_2DDrawing_AlphaBlend)
-      FrontColor(RGBA(0, 0, 0, 140))
-      DrawText((canvasW - TextWidth(resultText)) / 2 + 3, (canvasH - TextHeight(resultText)) / 2 + 3, resultText)
-      DrawingMode(#PB_2DDrawing_Default)
+      FrontColor(RGBA(0, 0, 0, resultShadow))
+      DrawText((canvasW - TextWidth(resultText)) / 2 + 3, (canvasH - TextHeight(resultText)) / 2 + 3 + resultRise, resultText)
 
       If winner = #PLAYER_BLACK
-        FrontColor(RGB(255, 215, 0))
+        FrontColor(RGBA(255, 215, 0, resultAlpha))
       ElseIf winner = #PLAYER_WHITE
-        FrontColor(RGB(255, 255, 255))
+        FrontColor(RGBA(255, 255, 255, resultAlpha))
       Else
-        FrontColor(RGB(144, 238, 144))
+        FrontColor(RGBA(144, 238, 144, resultAlpha))
       EndIf
       
-      DrawText((canvasW - TextWidth(resultText)) / 2, (canvasH - TextHeight(resultText)) / 2, resultText)
+      DrawText((canvasW - TextWidth(resultText)) / 2, (canvasH - TextHeight(resultText)) / 2 + resultRise, resultText)
+      DrawingMode(#PB_2DDrawing_Default)
       FreeFont(font)
     EndIf
   EndIf
@@ -400,6 +414,10 @@ EndProcedure
 ; <returns>Returns bool.</returns>
 Procedure.b EffectsActive()
   If placeFxAt > 0 And (ElapsedMilliseconds() - placeFxAt) < #FX_PLACE_MS
+    ProcedureReturn #True
+  EndIf
+
+  If resultFxAt > 0 And (ElapsedMilliseconds() - resultFxAt) < #FX_RESULT_MS
     ProcedureReturn #True
   EndIf
 

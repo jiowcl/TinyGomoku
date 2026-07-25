@@ -56,6 +56,8 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   TextGadget(#LBL_STATUS, 15, 760, 550, 30, "", #PB_Text_Center)
   
   LoadUIFont()
+  LoadAiPrefs()
+  ApplyAiPrefsToUi()
   SyncCanvasSize()
   BindGadgetEvent(#CANVAS, @CanvasGadgetEvent())
   
@@ -125,6 +127,7 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
     EndSelect
   ForEver
   
+  SaveAiPrefs()
   NetDisconnect()
   
   If boardImage <> -1
@@ -147,8 +150,12 @@ EndIf
 ; Folding = -
 ; Optimizer
 ; EnableAsm
+; EnableThread
 ; EnableXP
 ; DPIAware
+; DllProtection
 ; EnableOnError
+; Executable = Output\TinyGomoku.exe
 ; DisableDebugger
 ; CompileSourceDirectory
+; Compiler = PureBasic 6.40 - C Backend (Windows - x64)

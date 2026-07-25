@@ -56,14 +56,19 @@
 
 ; Sounds
 ; From: https://soundeffect-lab.info/sound/button/
-#SOUND_PUTDOWN_PIECE  = 100
-#SOUND_COMPLETED_GAME = 200
-#SOUND_NET_CONNECTION = 201
+#SOUND_PUTDOWN_PIECE   = 100
+#SOUND_PUTDOWN_PIECE_4 = 101
+#SOUND_COMPLETED_GAME  = 200
+#SOUND_NET_CONNECTION  = 201
 
 ; Effects
 #FX_PLACE_MS          = 280
 #FX_WINLINE_PERIOD_MS = 800
 #FX_WINLINE_THICK     = 3
+#FX_RESULT_MS         = 480
+
+; Preferences
+#PREF_FILENAME        = "TinyGomoku.ini"
 
 ; Function Declare
 Declare.i MinI(a.i, b.i)
@@ -74,6 +79,10 @@ Declare.s PlayerStatusText(player.i)
 Declare UpdateStatus()
 Declare SetOnlineControlsEnabled(enabled.i)
 Declare LoadUIFont()
+Declare.s PrefsFilePath()
+Declare LoadAiPrefs()
+Declare ApplyAiPrefsToUi()
+Declare SaveAiPrefs()
 
 Declare SyncCanvasSize()
 Declare CalculateLayout()
@@ -85,6 +94,8 @@ Declare.i CheckDirection(x.i, y.i, dx.i, dy.i, player.i)
 Declare.b CheckWin(x.i, y.i, player.i)
 Declare.b CheckDraw()
 Declare FinishGame(wonPlayer.i, isDraw.i)
+Declare.b HasFourInRow(x.i, y.i, player.i)
+Declare PlayMoveSound(mover.i, x.i, y.i, fromNetwork.i)
 Declare.b ApplyMove(x.i, y.i, fromNetwork.i)
 Declare UndoMove()
 
@@ -110,6 +121,9 @@ Declare NetPoll()
 
 Declare.b AiFindBestMove()
 Declare.i AiMoveDelay()
+Declare.i AiThreatComboBonus(x.i, y.i, player.i)
+Declare.i AiBestReplyScore(player.i)
+Declare.b AiHasNeighbor(x.i, y.i, radius.i)
 Declare.s AiDifficultyName(level.i)
 Declare AiSyncDifficultyFromUi()
 Declare AiSyncSideFromUi()
@@ -123,7 +137,8 @@ Declare AiCancelPending()
 Declare AiStartGame()
 
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 5
+; CursorPosition = 61
+; FirstLine = 33
 ; Optimizer
 ; EnableAsm
 ; EnableXP

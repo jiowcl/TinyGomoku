@@ -81,6 +81,7 @@ Procedure InitBoard()
   hoverY = -1
   placeFxAt = 0
   winFxAt = 0
+  resultFxAt = 0
 
   UpdateStatus()
 EndProcedure
@@ -234,6 +235,7 @@ EndProcedure
 ; <returns>Returns void.</returns>
 Procedure FinishGame(wonPlayer.i, isDraw.i)
   gameOver = #True
+  resultFxAt = ElapsedMilliseconds()
 
   If isDraw
     winner = #PLAYER_NONE
@@ -253,6 +255,106 @@ Procedure FinishGame(wonPlayer.i, isDraw.i)
   
   If IsSound(#SOUND_COMPLETED_GAME) <> 0
     PlaySound(#SOUND_COMPLETED_GAME)
+  EndIf
+EndProcedure
+
+; <summary>
+; CountLineSimple
+; Line length through (x,y) without touching win-line state.
+; </summary>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="dx">integer</param>
+; <param name="dy">integer</param>
+; <param name="player">integer</param>
+; <returns>Returns integer.</returns>
+Procedure.i CountLineSimple(x.i, y.i, dx.i, dy.i, player.i)
+  Protected nx.i, ny.i
+  Protected count.i = 1
+
+  nx = x + dx
+  ny = y + dy
+  While nx >= 0 And nx < #BOARD_SIZE And ny >= 0 And ny < #BOARD_SIZE And board(nx, ny) = player
+    count + 1
+    nx = nx + dx
+    ny = ny + dy
+  Wend
+
+  nx = x - dx
+  ny = y - dy
+  While nx >= 0 And nx < #BOARD_SIZE And ny >= 0 And ny < #BOARD_SIZE And board(nx, ny) = player
+    count + 1
+    nx = nx - dx
+    ny = ny - dy
+  Wend
+
+  ProcedureReturn count
+EndProcedure
+
+; <summary>
+; HasFourInRow
+; </summary>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="player">integer</param>
+; <returns>Returns bool.</returns>
+Procedure.b HasFourInRow(x.i, y.i, player.i)
+  If CountLineSimple(x, y, 1, 0, player) >= 4
+    ProcedureReturn #True
+  EndIf
+  If CountLineSimple(x, y, 0, 1, player) >= 4
+    ProcedureReturn #True
+  EndIf
+  If CountLineSimple(x, y, 1, 1, player) >= 4
+    ProcedureReturn #True
+  EndIf
+  If CountLineSimple(x, y, 1, -1, player) >= 4
+    ProcedureReturn #True
+  EndIf
+
+  ProcedureReturn #False
+EndProcedure
+
+; <summary>
+; PlayMoveSound
+; Normal putdown, or four-threat cue when the opponent creates a four.
+; Win/draw sounds are handled by FinishGame.
+; </summary>
+; <param name="mover">integer</param>
+; <param name="x">integer</param>
+; <param name="y">integer</param>
+; <param name="fromNetwork">integer</param>
+; <returns>Returns void.</returns>
+Procedure PlayMoveSound(mover.i, x.i, y.i, fromNetwork.i)
+  Protected threat.i = #False
+
+  If gameOver
+    ProcedureReturn
+  EndIf
+
+  If HasFourInRow(x, y, mover)
+    Select gameMode
+      Case #MODE_LOCAL
+        threat = #True
+      Case #MODE_AI
+        If mover = aiPlayer
+          threat = #True
+        EndIf
+      Case #MODE_HOST, #MODE_CLIENT
+        If fromNetwork Or mover <> myPlayer
+          threat = #True
+        EndIf
+    EndSelect
+  EndIf
+
+  If threat
+    If IsSound(#SOUND_PUTDOWN_PIECE_4) <> 0
+      PlaySound(#SOUND_PUTDOWN_PIECE_4)
+    EndIf
+  Else
+    If IsSound(#SOUND_PUTDOWN_PIECE) <> 0
+      PlaySound(#SOUND_PUTDOWN_PIECE)
+    EndIf
   EndIf
 EndProcedure
 
@@ -305,6 +407,8 @@ Procedure.b ApplyMove(x.i, y.i, fromNetwork.i)
     UpdateStatus()
   EndIf
 
+  PlayMoveSound(mover, x, y, fromNetwork)
+
   ProcedureReturn #True
 EndProcedure
 
@@ -324,6 +428,7 @@ Procedure UndoOneMove()
     winner = #PLAYER_NONE
     winLineCount = 0
     winFxAt = 0
+    resultFxAt = 0
   EndIf
 
   moveCount - 1

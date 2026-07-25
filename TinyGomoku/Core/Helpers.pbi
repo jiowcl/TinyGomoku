@@ -169,10 +169,62 @@ Procedure LoadUIFont()
     SetGadgetFont(#LBL_STATUS, FontID(statusFont))
   EndIf
 EndProcedure
+
+; <summary>
+; PrefsFilePath
+; </summary>
+; <returns>Returns string.</returns>
+Procedure.s PrefsFilePath()
+  ProcedureReturn GetPathPart(ProgramFilename()) + #PREF_FILENAME
+EndProcedure
+
+; <summary>
+; LoadAiPrefs
+; </summary>
+; <returns>Returns void.</returns>
+Procedure LoadAiPrefs()
+  If OpenPreferences(PrefsFilePath()) = 0
+    ProcedureReturn
+  EndIf
+
+  PreferenceGroup("AI")
+  aiDifficulty = ReadPreferenceInteger("Difficulty", #AI_NORMAL)
+  aiHumanSide = ReadPreferenceInteger("Side", #AI_SIDE_BLACK)
+  ClosePreferences()
+
+  If aiDifficulty < #AI_EASY Or aiDifficulty > #AI_HARD
+    aiDifficulty = #AI_NORMAL
+  EndIf
+
+  If aiHumanSide < #AI_SIDE_BLACK Or aiHumanSide > #AI_SIDE_WHITE
+    aiHumanSide = #AI_SIDE_BLACK
+  EndIf
+EndProcedure
+
+; <summary>
+; ApplyAiPrefsToUi
+; </summary>
+; <returns>Returns void.</returns>
+Procedure ApplyAiPrefsToUi()
+  SetGadgetState(#CMB_AI_DIFF, aiDifficulty)
+  SetGadgetState(#CMB_AI_SIDE, aiHumanSide)
+EndProcedure
+
+; <summary>
+; SaveAiPrefs
+; </summary>
+; <returns>Returns void.</returns>
+Procedure SaveAiPrefs()
+  If CreatePreferences(PrefsFilePath()) = 0
+    ProcedureReturn
+  EndIf
+
+  PreferenceGroup("AI")
+  WritePreferenceInteger("Difficulty", aiDifficulty)
+  WritePreferenceInteger("Side", aiHumanSide)
+  ClosePreferences()
+EndProcedure
 ; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 42
-; FirstLine = 27
-; Folding = --
 ; Optimizer
 ; EnableAsm
 ; EnableXP
