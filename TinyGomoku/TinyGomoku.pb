@@ -27,7 +27,7 @@ IncludeFile "./Core/AI.pbi"
 IncludeFile "./Core/Input.pbi"
 
 ; Ui
-If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl", #PB_Window_SystemMenu | #PB_Window_MinimizeGadget | #PB_Window_ScreenCentered)
+If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 820, "TinyGomoku " + #APP_VERSION$ + " by Jiowcl", #PB_Window_SystemMenu | #PB_Window_MinimizeGadget | #PB_Window_ScreenCentered)
   CanvasGadget(#CANVAS, 15, 15, canvasW, canvasH)
   
   TextGadget(#LBL_NET, 15, 575, 550, 20, "Two-Player Battle in this Game")
@@ -53,7 +53,12 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   
   ButtonGadget(#BTN_RESTART, 15, 688, 270, 35, "Restart")
   ButtonGadget(#BTN_UNDO, 295, 688, 270, 35, "Back a Move")
-  TextGadget(#LBL_STATUS, 15, 760, 550, 30, "", #PB_Text_Center)
+
+  CheckBoxGadget(#CHK_SOUND, 15, 732, 100, 24, "Sound")
+  SetGadgetState(#CHK_SOUND, #True)
+  TextGadget(#LBL_VERSION, 400, 734, 165, 20, "v" + #APP_VERSION$, #PB_Text_Right)
+
+  TextGadget(#LBL_STATUS, 15, 770, 550, 30, "", #PB_Text_Center)
   
   LoadUIFont()
   LoadAiPrefs()
@@ -91,14 +96,19 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
           Case #CMB_AI_SIDE
             AiSyncSideFromUi()
             If gameMode = #MODE_AI
-              ; Side applies on Restart / vs AI; update preference label hint only.
               SetGadgetText(#LBL_NET, "Side preference: " + GetGadgetText(#CMB_AI_SIDE) + " (Restart to apply) — " + AiDifficultyName(aiDifficulty))
             EndIf
+
+          Case #CHK_SOUND
+            soundEnabled = GetGadgetState(#CHK_SOUND)
+            SaveAiPrefs()
   
           Case #BTN_HOST
+            SaveAiPrefs()
             NetStartHost()
   
           Case #BTN_JOIN
+            SaveAiPrefs()
             NetJoinHost()
   
           Case #BTN_RESTART
@@ -144,18 +154,3 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 800, "TinyGomoku by Jiowcl
   
   CloseWindow(#WIN_MAIN)
 EndIf
-; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 45
-; FirstLine = 9
-; Folding = -
-; Optimizer
-; EnableAsm
-; EnableThread
-; EnableXP
-; DPIAware
-; DllProtection
-; EnableOnError
-; Executable = Output\TinyGomoku.exe
-; DisableDebugger
-; CompileSourceDirectory
-; Compiler = PureBasic 6.40 - C Backend (Windows - x64)

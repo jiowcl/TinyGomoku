@@ -82,6 +82,8 @@ Procedure InitBoard()
   placeFxAt = 0
   winFxAt = 0
   resultFxAt = 0
+  ClearUndoFx()
+  ClearParticleFx()
 
   UpdateStatus()
 EndProcedure
@@ -236,15 +238,18 @@ EndProcedure
 Procedure FinishGame(wonPlayer.i, isDraw.i)
   gameOver = #True
   resultFxAt = ElapsedMilliseconds()
+  ClearUndoFx()
 
   If isDraw
     winner = #PLAYER_NONE
     winFxAt = 0
+    ClearParticleFx()
     
     SetGadgetText(#LBL_STATUS, "Draw")
   Else
     winner = wonPlayer
     winFxAt = ElapsedMilliseconds()
+    SpawnWinParticles()
     
     If winner = #PLAYER_BLACK
       SetGadgetText(#LBL_STATUS, "Black Wins")
@@ -253,9 +258,7 @@ Procedure FinishGame(wonPlayer.i, isDraw.i)
     EndIf
   EndIf
   
-  If IsSound(#SOUND_COMPLETED_GAME) <> 0
-    PlaySound(#SOUND_COMPLETED_GAME)
-  EndIf
+  PlaySoundSafe(#SOUND_COMPLETED_GAME)
 EndProcedure
 
 ; <summary>
@@ -348,13 +351,9 @@ Procedure PlayMoveSound(mover.i, x.i, y.i, fromNetwork.i)
   EndIf
 
   If threat
-    If IsSound(#SOUND_PUTDOWN_PIECE_4) <> 0
-      PlaySound(#SOUND_PUTDOWN_PIECE_4)
-    EndIf
+    PlaySoundSafe(#SOUND_PUTDOWN_PIECE_4)
   Else
-    If IsSound(#SOUND_PUTDOWN_PIECE) <> 0
-      PlaySound(#SOUND_PUTDOWN_PIECE)
-    EndIf
+    PlaySoundSafe(#SOUND_PUTDOWN_PIECE)
   EndIf
 EndProcedure
 
@@ -393,6 +392,7 @@ Procedure.b ApplyMove(x.i, y.i, fromNetwork.i)
   movePlayer(moveCount) = mover
   moveCount + 1
   placeFxAt = ElapsedMilliseconds()
+  ClearUndoFx()
 
   If CheckWin(x, y, mover)
     FinishGame(mover, #False)
@@ -413,6 +413,35 @@ Procedure.b ApplyMove(x.i, y.i, fromNetwork.i)
 EndProcedure
 
 ; <summary>
+; ClearUndoFx
+; </summary>
+; <returns>Returns void.</returns>
+Procedure ClearUndoFx()
+  undoFxCount = 0
+  undoFxAt = 0
+EndProcedure
+
+; <summary>
+; QueueUndoGhost
+; </summary>
+; <param name="moveIndex">integer</param>
+; <returns>Returns void.</returns>
+Procedure QueueUndoGhost(moveIndex.i)
+  If moveIndex < 0 Or moveIndex >= moveCount
+    ProcedureReturn
+  EndIf
+
+  If undoFxCount >= #FX_UNDO_MAX
+    ProcedureReturn
+  EndIf
+
+  undoFxX(undoFxCount) = moveX(moveIndex)
+  undoFxY(undoFxCount) = moveY(moveIndex)
+  undoFxPlayer(undoFxCount) = movePlayer(moveIndex)
+  undoFxCount + 1
+EndProcedure
+
+; <summary>
 ; UndoOneMove
 ; </summary>
 ; <returns>Returns void.</returns>
@@ -429,6 +458,7 @@ Procedure UndoOneMove()
     winLineCount = 0
     winFxAt = 0
     resultFxAt = 0
+    ClearParticleFx()
   EndIf
 
   moveCount - 1
@@ -451,19 +481,27 @@ Procedure UndoMove()
     ProcedureReturn
   EndIf
 
+  ClearUndoFx()
+  undoFxAt = ElapsedMilliseconds()
+
   If gameMode = #MODE_AI
     AiCancelPending()
 
     ; While AI is still "thinking", only the human's last stone exists.
     If currentPlayer = aiPlayer And moveCount >= 1 And movePlayer(moveCount - 1) = myPlayer
+      QueueUndoGhost(moveCount - 1)
       UndoOneMove()
     ElseIf moveCount >= 2
+      QueueUndoGhost(moveCount - 1)
+      QueueUndoGhost(moveCount - 2)
       UndoOneMove()
       UndoOneMove()
     Else
+      QueueUndoGhost(moveCount - 1)
       UndoOneMove()
     EndIf
   Else
+    QueueUndoGhost(moveCount - 1)
     UndoOneMove()
   EndIf
 

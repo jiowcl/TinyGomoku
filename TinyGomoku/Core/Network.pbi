@@ -116,7 +116,7 @@ Procedure NetDisconnect()
   DisableGadget(#BTN_UNDO, #False)
   
   If IsSound(#SOUND_NET_CONNECTION) <> 0
-    PlaySound(#SOUND_NET_CONNECTION)
+    PlaySoundSafe(#SOUND_NET_CONNECTION)
   EndIf
 EndProcedure
 
@@ -241,7 +241,7 @@ Procedure NetPoll()
             UpdateStatus()
             
             If IsSound(#SOUND_NET_CONNECTION) <> 0
-              PlaySound(#SOUND_NET_CONNECTION)
+              PlaySoundSafe(#SOUND_NET_CONNECTION)
             EndIf
           Else
             CloseNetworkConnection(cid)
@@ -260,7 +260,7 @@ Procedure NetPoll()
             NetStartLocal()
             
             If IsSound(#SOUND_NET_CONNECTION) <> 0
-              PlaySound(#SOUND_NET_CONNECTION)
+              PlaySoundSafe(#SOUND_NET_CONNECTION)
             EndIf
           EndIf
       EndSelect

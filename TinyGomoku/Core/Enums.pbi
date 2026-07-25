@@ -3,7 +3,8 @@
 ;  Code released under the MIT license.
 ;--------------------------------------------------------------------------------------------
 
-#VERSION          = 1.1
+#APP_VERSION$     = "1.2"
+#VERSION          = 1.2
 
 ; CheckerBoard
 #BOARD_SIZE       = 15
@@ -25,6 +26,8 @@
 #BTN_AI           = 11
 #CMB_AI_DIFF      = 12
 #CMB_AI_SIDE      = 13
+#CHK_SOUND        = 14
+#LBL_VERSION      = 15
 
 ; Piece
 #PLAYER_NONE      = 0
@@ -66,6 +69,10 @@
 #FX_WINLINE_PERIOD_MS = 800
 #FX_WINLINE_THICK     = 3
 #FX_RESULT_MS         = 480
+#FX_UNDO_MS           = 240
+#FX_UNDO_MAX          = 2
+#FX_PARTICLE_MAX      = 40
+#FX_PARTICLE_MS       = 1200
 
 ; Preferences
 #PREF_FILENAME        = "TinyGomoku.ini"
@@ -83,6 +90,7 @@ Declare.s PrefsFilePath()
 Declare LoadAiPrefs()
 Declare ApplyAiPrefsToUi()
 Declare SaveAiPrefs()
+Declare PlaySoundSafe(soundId.i)
 
 Declare SyncCanvasSize()
 Declare CalculateLayout()
@@ -90,6 +98,7 @@ Declare EnsureBoardImage()
 Declare InitBoard()
 Declare ScreenToBoard(sx.i, sy.i)
 Declare.i BoardPosX(bx.i)
+Declare.i BoardPosY(by.i)
 Declare.i CheckDirection(x.i, y.i, dx.i, dy.i, player.i)
 Declare.b CheckWin(x.i, y.i, player.i)
 Declare.b CheckDraw()
@@ -98,10 +107,16 @@ Declare.b HasFourInRow(x.i, y.i, player.i)
 Declare PlayMoveSound(mover.i, x.i, y.i, fromNetwork.i)
 Declare.b ApplyMove(x.i, y.i, fromNetwork.i)
 Declare UndoMove()
+Declare ClearUndoFx()
+Declare QueueUndoGhost(moveIndex.i)
 
 Declare DrawPiece(sx.i, sy.i, isBlack.i)
 Declare DrawPieceFx(sx.i, sy.i, isBlack.i, radius.i, alpha.i)
 Declare DrawWinLine()
+Declare DrawUndoGhosts()
+Declare DrawWinParticles()
+Declare SpawnWinParticles()
+Declare ClearParticleFx()
 Declare DrawBoardContent()
 Declare DrawBoard()
 Declare.b EffectsActive()
@@ -135,14 +150,3 @@ Declare AiScheduleMove()
 Declare AiPoll()
 Declare AiCancelPending()
 Declare AiStartGame()
-
-; IDE Options = PureBasic 6.40 (Windows - x64)
-; CursorPosition = 61
-; FirstLine = 33
-; Optimizer
-; EnableAsm
-; EnableXP
-; DPIAware
-; EnableOnError
-; DisableDebugger
-; CompileSourceDirectory

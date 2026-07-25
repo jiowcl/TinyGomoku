@@ -323,6 +323,8 @@ Procedure DrawBoardContent()
     DrawPieceFx(sx, sy, Bool(board(lastX, lastY) = #PLAYER_BLACK), fxRadius, fxAlpha)
   EndIf
 
+  DrawUndoGhosts()
+
   If moveCount > 0 And PlaceFxLinear() >= 65
     last = moveCount - 1
     sx = BoardPosX(moveX(last)) : sy = BoardPosY(moveY(last))
@@ -388,6 +390,148 @@ Procedure DrawBoardContent()
   If gameOver And winner <> #PLAYER_NONE
     DrawWinLine()
   EndIf
+
+  DrawWinParticles()
+EndProcedure
+
+; <summary>
+; ClearParticleFx
+; </summary>
+; <returns>Returns void.</returns>
+Procedure ClearParticleFx()
+  particleCount = 0
+  particleFxAt = 0
+EndProcedure
+
+; <summary>
+; SpawnWinParticles
+; </summary>
+; <returns>Returns void.</returns>
+Procedure SpawnWinParticles()
+  Protected i.i, n.i
+  Protected cx.i, cy.i
+  Protected baseColor.i
+
+  ClearParticleFx()
+  CalculateLayout()
+
+  If winLineCount > 0
+    cx = 0
+    cy = 0
+    For i = 0 To winLineCount - 1
+      cx + BoardPosX(winLineX(i))
+      cy + BoardPosY(winLineY(i))
+    Next
+    cx = cx / winLineCount
+    cy = cy / winLineCount
+  Else
+    cx = canvasW / 2
+    cy = canvasH / 2
+  EndIf
+
+  If winner = #PLAYER_BLACK
+    baseColor = RGB(255, 215, 0)
+  Else
+    baseColor = RGB(255, 255, 255)
+  EndIf
+
+  particleFxAt = ElapsedMilliseconds()
+  n = #FX_PARTICLE_MAX
+  particleCount = n
+
+  For i = 0 To n - 1
+    particleX(i) = cx + Random(24) - 12
+    particleY(i) = cy + Random(24) - 12
+    particleVx(i) = Random(11) - 5
+    particleVy(i) = Random(9) - 8
+    particleLife(i) = 700 + Random(500)
+    If Random(2) = 0
+      particleColor(i) = baseColor
+    Else
+      particleColor(i) = RGB(255, 80 + Random(40), 60)
+    EndIf
+  Next
+EndProcedure
+
+; <summary>
+; DrawUndoGhosts
+; </summary>
+; <returns>Returns void.</returns>
+Procedure DrawUndoGhosts()
+  Protected i.i
+  Protected elapsed.i
+  Protected prog.i, alpha.i
+  Protected sx.i, sy.i
+
+  If undoFxCount <= 0 Or undoFxAt = 0
+    ProcedureReturn
+  EndIf
+
+  elapsed = ElapsedMilliseconds() - undoFxAt
+  If elapsed >= #FX_UNDO_MS
+    ClearUndoFx()
+    ProcedureReturn
+  EndIf
+
+  prog = EaseOutQuad100(elapsed * 100 / #FX_UNDO_MS)
+  alpha = 220 - prog * 220 / 100
+  If alpha < 1
+    ProcedureReturn
+  EndIf
+
+  For i = 0 To undoFxCount - 1
+    sx = BoardPosX(undoFxX(i))
+    sy = BoardPosY(undoFxY(i))
+    DrawPieceFx(sx, sy, Bool(undoFxPlayer(i) = #PLAYER_BLACK), pieceRadius, alpha)
+  Next
+EndProcedure
+
+; <summary>
+; DrawWinParticles
+; </summary>
+; <returns>Returns void.</returns>
+Procedure DrawWinParticles()
+  Protected i.i
+  Protected age.i
+  Protected sx.i, sy.i, r.i
+  Protected alpha.i
+  Protected now.i
+  Protected cr.i, cg.i, cb.i
+
+  If particleCount <= 0 Or particleFxAt = 0
+    ProcedureReturn
+  EndIf
+
+  now = ElapsedMilliseconds()
+  If now - particleFxAt > #FX_PARTICLE_MS
+    ClearParticleFx()
+    ProcedureReturn
+  EndIf
+
+  DrawingMode(#PB_2DDrawing_AlphaBlend)
+
+  For i = 0 To particleCount - 1
+    age = now - particleFxAt
+    If age >= particleLife(i)
+      Continue
+    EndIf
+
+    sx = particleX(i) + particleVx(i) * age / 18
+    sy = particleY(i) + particleVy(i) * age / 18 + (age * age) / 9000
+    alpha = 255 - age * 255 / particleLife(i)
+    If alpha < 1
+      Continue
+    EndIf
+
+    r = MaxI(2, 5 - age / 250)
+    cr = Red(particleColor(i))
+    cg = Green(particleColor(i))
+    cb = Blue(particleColor(i))
+    Circle(sx, sy, r + 1, RGBA(cr, cg, cb, alpha / 3))
+    Circle(sx, sy, r, RGBA(cr, cg, cb, alpha))
+  Next
+
+  DrawingMode(#PB_2DDrawing_Default)
 EndProcedure
 
 ; <summary>
@@ -418,6 +562,14 @@ Procedure.b EffectsActive()
   EndIf
 
   If resultFxAt > 0 And (ElapsedMilliseconds() - resultFxAt) < #FX_RESULT_MS
+    ProcedureReturn #True
+  EndIf
+
+  If undoFxAt > 0 And undoFxCount > 0 And (ElapsedMilliseconds() - undoFxAt) < #FX_UNDO_MS
+    ProcedureReturn #True
+  EndIf
+
+  If particleFxAt > 0 And particleCount > 0 And (ElapsedMilliseconds() - particleFxAt) < #FX_PARTICLE_MS
     ProcedureReturn #True
   EndIf
 

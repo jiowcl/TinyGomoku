@@ -8,43 +8,43 @@
   <section name="data">
     <explorer view="C:\ProgramData\PureBasic\Examples\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2026-07-25 21:32" user="使用者" host="DESKTOP-K1RBCTS"/>
+    <lastopen date="2026-07-25 21:47" user="使用者" host="DESKTOP-K1RBCTS"/>
   </section>
   <section name="files">
     <file name="Core\Enums.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="1" panelstate="++"/>
-      <fingerprint md5="73efbada0a15d0668c2e7b297cec4700"/>
+      <fingerprint md5="b4979a6dfb55f57067f9e57712e04d27"/>
     </file>
     <file name="Core\Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="2" panelstate="++"/>
-      <fingerprint md5="4ec38906163947d0b89c7371deffd616"/>
+      <fingerprint md5="0cff362e51dbe08adec6e37aa0e69a90"/>
     </file>
     <file name="TinyGomoku.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="3" panelstate="+"/>
-      <fingerprint md5="afbfd644c03f4a2eba2e0bdd031d01c0"/>
+      <fingerprint md5="b101bcc87883d7a04c079979b7432275"/>
     </file>
     <file name="Core\Board.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="4" panelstate="++"/>
-      <fingerprint md5="270a6f6522cc5f3050983cda11ededa9"/>
+      <fingerprint md5="c6a9e7e390c74cc9db07862349b0868b"/>
     </file>
     <file name="Core\Drawing.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="5" panelstate="++"/>
-      <fingerprint md5="172e9fceff75eb2edda64260b13d5518"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
+      <fingerprint md5="935a0f2bbcf56282863cf9fb03cc6b2b"/>
     </file>
     <file name="Core\Globals.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="6" panelstate="++"/>
-      <fingerprint md5="47d40c5857d3863b4abd13ef0f24f173"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
+      <fingerprint md5="4f0cfcf9b6566e68170809dbd79851f9"/>
     </file>
     <file name="Core\Input.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="7" panelstate="++"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
       <fingerprint md5="a8baa2beae0869117868cd66b7f3040a"/>
     </file>
     <file name="Core\Network.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="8" panelstate="++"/>
-      <fingerprint md5="9f66ee7589ee562a22ce3abcb0b257ae"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
+      <fingerprint md5="848dec4d216dd07a78c2a87b5000b025"/>
     </file>
     <file name="Core\AI.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="9" panelstate="++"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
       <fingerprint md5="2a43944285d0189c632f0eb9635a326f"/>
     </file>
   </section>

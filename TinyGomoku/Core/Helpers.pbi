@@ -127,6 +127,21 @@ Procedure SetOnlineControlsEnabled(enabled.i)
 EndProcedure
 
 ; <summary>
+; PlaySoundSafe
+; </summary>
+; <param name="soundId">integer</param>
+; <returns>Returns void.</returns>
+Procedure PlaySoundSafe(soundId.i)
+  If soundEnabled = #False
+    ProcedureReturn
+  EndIf
+
+  If IsSound(soundId) <> 0
+    PlaySound(soundId)
+  EndIf
+EndProcedure
+
+; <summary>
 ; LoadUIFont
 ; </summary>
 ; <returns>Returns void.</returns>
@@ -153,6 +168,8 @@ Procedure LoadUIFont()
     SetGadgetFont(#STR_HOST, FontID(uiFont))
     SetGadgetFont(#STR_PORT, FontID(uiFont))
     SetGadgetFont(#LBL_NET, FontID(uiFont))
+    SetGadgetFont(#CHK_SOUND, FontID(uiFont))
+    SetGadgetFont(#LBL_VERSION, FontID(uiFont))
   EndIf
 
   statusFont = LoadFont(#PB_Any, "Microsoft JhengHei UI", 14, #PB_Font_HighQuality | #PB_Font_Bold)
@@ -190,6 +207,14 @@ Procedure LoadAiPrefs()
   PreferenceGroup("AI")
   aiDifficulty = ReadPreferenceInteger("Difficulty", #AI_NORMAL)
   aiHumanSide = ReadPreferenceInteger("Side", #AI_SIDE_BLACK)
+
+  PreferenceGroup("Network")
+  prefHost = ReadPreferenceString("Host", "127.0.0.1")
+  prefPort = ReadPreferenceString("Port", Str(#NET_PORT_DEFAULT))
+
+  PreferenceGroup("Audio")
+  soundEnabled = ReadPreferenceInteger("Enabled", 1)
+
   ClosePreferences()
 
   If aiDifficulty < #AI_EASY Or aiDifficulty > #AI_HARD
@@ -198,6 +223,20 @@ Procedure LoadAiPrefs()
 
   If aiHumanSide < #AI_SIDE_BLACK Or aiHumanSide > #AI_SIDE_WHITE
     aiHumanSide = #AI_SIDE_BLACK
+  EndIf
+
+  If Trim(prefHost) = ""
+    prefHost = "127.0.0.1"
+  EndIf
+
+  If Val(prefPort) <= 0 Or Val(prefPort) > 65535
+    prefPort = Str(#NET_PORT_DEFAULT)
+  EndIf
+
+  If soundEnabled <> 0
+    soundEnabled = #True
+  Else
+    soundEnabled = #False
   EndIf
 EndProcedure
 
@@ -208,6 +247,9 @@ EndProcedure
 Procedure ApplyAiPrefsToUi()
   SetGadgetState(#CMB_AI_DIFF, aiDifficulty)
   SetGadgetState(#CMB_AI_SIDE, aiHumanSide)
+  SetGadgetText(#STR_HOST, prefHost)
+  SetGadgetText(#STR_PORT, prefPort)
+  SetGadgetState(#CHK_SOUND, soundEnabled)
 EndProcedure
 
 ; <summary>
@@ -215,6 +257,36 @@ EndProcedure
 ; </summary>
 ; <returns>Returns void.</returns>
 Procedure SaveAiPrefs()
+  If IsGadget(#CMB_AI_DIFF)
+    aiDifficulty = GetGadgetState(#CMB_AI_DIFF)
+    aiHumanSide = GetGadgetState(#CMB_AI_SIDE)
+    prefHost = Trim(GetGadgetText(#STR_HOST))
+    prefPort = Trim(GetGadgetText(#STR_PORT))
+    soundEnabled = GetGadgetState(#CHK_SOUND)
+  EndIf
+
+  If aiDifficulty < #AI_EASY Or aiDifficulty > #AI_HARD
+    aiDifficulty = #AI_NORMAL
+  EndIf
+
+  If aiHumanSide < #AI_SIDE_BLACK Or aiHumanSide > #AI_SIDE_WHITE
+    aiHumanSide = #AI_SIDE_BLACK
+  EndIf
+
+  If prefHost = ""
+    prefHost = "127.0.0.1"
+  EndIf
+
+  If Val(prefPort) <= 0 Or Val(prefPort) > 65535
+    prefPort = Str(#NET_PORT_DEFAULT)
+  EndIf
+
+  If soundEnabled <> 0
+    soundEnabled = #True
+  Else
+    soundEnabled = #False
+  EndIf
+
   If CreatePreferences(PrefsFilePath()) = 0
     ProcedureReturn
   EndIf
@@ -222,13 +294,13 @@ Procedure SaveAiPrefs()
   PreferenceGroup("AI")
   WritePreferenceInteger("Difficulty", aiDifficulty)
   WritePreferenceInteger("Side", aiHumanSide)
+
+  PreferenceGroup("Network")
+  WritePreferenceString("Host", prefHost)
+  WritePreferenceString("Port", prefPort)
+
+  PreferenceGroup("Audio")
+  WritePreferenceInteger("Enabled", soundEnabled)
+
   ClosePreferences()
 EndProcedure
-; IDE Options = PureBasic 6.40 (Windows - x64)
-; Optimizer
-; EnableAsm
-; EnableXP
-; DPIAware
-; EnableOnError
-; DisableDebugger
-; CompileSourceDirectory
