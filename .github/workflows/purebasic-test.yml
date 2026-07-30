@@ -53,6 +53,6 @@ jobs:
         if (Test-Path "TinyGomoku.exe") {
             Write-Host "The Test Program Compiled Successfully!"
         } else {
-            Write-Error "Compilation Failed; DllVersion.exe was not Generated."
+            Write-Error "Compilation Failed; TinyGomoku.exe was not Generated."
             exit 1
         }
