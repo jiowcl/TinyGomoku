@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="C:\ProgramData\PureBasic\Examples\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2026-07-25 21:47" user="使用者" host="DESKTOP-K1RBCTS"/>
+    <lastopen date="2026-07-30 11:50" user="Fred" host="DESKTOP-AMI620D"/>
   </section>
   <section name="files">
     <file name="Core\Enums.pbi">
@@ -33,7 +33,7 @@
     </file>
     <file name="Core\Globals.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
-      <fingerprint md5="4f0cfcf9b6566e68170809dbd79851f9"/>
+      <fingerprint md5="0248612fbaef3da366e889e4524b9054"/>
     </file>
     <file name="Core\Input.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" sortindex="999" panelstate="++"/>
@@ -56,6 +56,7 @@
       <executable value="Output\TinyGomoku.exe"/>
       <options asm="1" thread="1" xpskin="1" dpiaware="1" onerror="1" optimizer="1"/>
       <temporaryexe value="source"/>
+      <icon enable="1">logo.ico</icon>
       <versioninfo enable="1">
         <field0 value="1.3.0.0"/>
         <field1 value="1.3.0.0"/>
