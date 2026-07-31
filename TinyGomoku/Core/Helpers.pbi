@@ -32,6 +32,25 @@ Procedure.i MaxI(a.i, b.i)
 EndProcedure
 
 ; <summary>
+; ClampI
+; </summary>
+; <param name="v">integer</param>
+; <param name="lo">integer</param>
+; <param name="hi">integer</param>
+; <returns>Returns integer.</returns>
+Procedure.i ClampI(v.i, lo.i, hi.i)
+  If v < lo
+    ProcedureReturn lo
+  EndIf
+
+  If v > hi
+    ProcedureReturn hi
+  EndIf
+
+  ProcedureReturn v
+EndProcedure
+
+; <summary>
 ; PlayerName
 ; </summary>
 ; <param name="player">integer</param>
@@ -169,6 +188,7 @@ Procedure LoadUIFont()
     SetGadgetFont(#STR_PORT, FontID(uiFont))
     SetGadgetFont(#LBL_NET, FontID(uiFont))
     SetGadgetFont(#CHK_SOUND, FontID(uiFont))
+    SetGadgetFont(#CHK_MUSIC, FontID(uiFont))
     SetGadgetFont(#LBL_VERSION, FontID(uiFont))
   EndIf
 
@@ -214,6 +234,8 @@ Procedure LoadAiPrefs()
 
   PreferenceGroup("Audio")
   soundEnabled = ReadPreferenceInteger("Enabled", 1)
+  musicEnabled = ReadPreferenceInteger("MusicEnabled", 1)
+  musicVolume = ReadPreferenceInteger("MusicVolume", #MUSIC_VOLUME_DEFAULT)
 
   ClosePreferences()
 
@@ -238,6 +260,14 @@ Procedure LoadAiPrefs()
   Else
     soundEnabled = #False
   EndIf
+
+  If musicEnabled <> 0
+    musicEnabled = #True
+  Else
+    musicEnabled = #False
+  EndIf
+
+  musicVolume = ClampI(musicVolume, 0, 100)
 EndProcedure
 
 ; <summary>
@@ -250,6 +280,7 @@ Procedure ApplyAiPrefsToUi()
   SetGadgetText(#STR_HOST, prefHost)
   SetGadgetText(#STR_PORT, prefPort)
   SetGadgetState(#CHK_SOUND, soundEnabled)
+  SyncMusicUi()
 EndProcedure
 
 ; <summary>
@@ -263,6 +294,9 @@ Procedure SaveAiPrefs()
     prefHost = Trim(GetGadgetText(#STR_HOST))
     prefPort = Trim(GetGadgetText(#STR_PORT))
     soundEnabled = GetGadgetState(#CHK_SOUND)
+    If IsGadget(#CHK_MUSIC) And musicLoaded
+      musicEnabled = GetGadgetState(#CHK_MUSIC)
+    EndIf
   EndIf
 
   If aiDifficulty < #AI_EASY Or aiDifficulty > #AI_HARD
@@ -287,6 +321,14 @@ Procedure SaveAiPrefs()
     soundEnabled = #False
   EndIf
 
+  If musicEnabled <> 0
+    musicEnabled = #True
+  Else
+    musicEnabled = #False
+  EndIf
+
+  musicVolume = ClampI(musicVolume, 0, 100)
+
   If CreatePreferences(PrefsFilePath()) = 0
     ProcedureReturn
   EndIf
@@ -301,6 +343,8 @@ Procedure SaveAiPrefs()
 
   PreferenceGroup("Audio")
   WritePreferenceInteger("Enabled", soundEnabled)
+  WritePreferenceInteger("MusicEnabled", musicEnabled)
+  WritePreferenceInteger("MusicVolume", musicVolume)
 
   ClosePreferences()
 EndProcedure

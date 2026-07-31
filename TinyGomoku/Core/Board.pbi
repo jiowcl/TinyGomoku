@@ -84,6 +84,7 @@ Procedure InitBoard()
   resultFxAt = 0
   ClearUndoFx()
   ClearParticleFx()
+  EnsureBgmPlaying()
 
   UpdateStatus()
 EndProcedure
@@ -259,6 +260,7 @@ Procedure FinishGame(wonPlayer.i, isDraw.i)
   EndIf
   
   PlaySoundSafe(#SOUND_COMPLETED_GAME)
+  FadeOutBgm()
 EndProcedure
 
 ; <summary>

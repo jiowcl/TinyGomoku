@@ -3,8 +3,8 @@
 ;  Code released under the MIT license.
 ;--------------------------------------------------------------------------------------------
 
-#APP_VERSION$     = "1.2"
-#VERSION          = 1.2
+#APP_VERSION$     = "1.3"
+#VERSION          = 1.3
 
 ; CheckerBoard
 #BOARD_SIZE       = 15
@@ -28,6 +28,7 @@
 #CMB_AI_SIDE      = 13
 #CHK_SOUND        = 14
 #LBL_VERSION      = 15
+#CHK_MUSIC        = 16
 
 ; Piece
 #PLAYER_NONE      = 0
@@ -64,6 +65,13 @@
 #SOUND_COMPLETED_GAME  = 200
 #SOUND_NET_CONNECTION  = 201
 
+; Music (tracker module via ModPlug)
+; From: https://pansound.com/panicpumpkin/music/hageshii.html 
+#MUSIC_BGM            = 0
+#MUSIC_VOLUME_DEFAULT = 50
+#MUSIC_PAUSE_VOLUME   = 12
+#MUSIC_FADE_MS        = 700
+
 ; Effects
 #FX_PLACE_MS          = 280
 #FX_WINLINE_PERIOD_MS = 800
@@ -80,6 +88,7 @@
 ; Function Declare
 Declare.i MinI(a.i, b.i)
 Declare.i MaxI(a.i, b.i)
+Declare.i ClampI(v.i, lo.i, hi.i)
 
 Declare.s PlayerName(player.i)
 Declare.s PlayerStatusText(player.i)
@@ -125,6 +134,18 @@ Declare.i PlaceFxProgress()
 Declare.i PlaceFxLinear()
 Declare.i PlaceFxScalePct()
 Declare.i EaseOutQuad100(t.i)
+
+Declare.s ResolveAssetPath(fileName.s)
+Declare.b TryLoadBgmFile(fileName.s)
+Declare.b InitBgm()
+Declare FreeBgm()
+Declare ApplyMusicVolume(vol.i)
+Declare StartBgm()
+Declare StopBgm()
+Declare EnsureBgmPlaying()
+Declare FadeOutBgm()
+Declare MusicTick()
+Declare SyncMusicUi()
 
 Declare NetSendLine(line.s)
 Declare NetReceiveData(connectionID.i)

@@ -22,6 +22,7 @@ IncludeFile "./Core/Globals.pbi"
 IncludeFile "./Core/Helpers.pbi"
 IncludeFile "./Core/Board.pbi"
 IncludeFile "./Core/Drawing.pbi"
+IncludeFile "./Core/Music.pbi"
 IncludeFile "./Core/Network.pbi"
 IncludeFile "./Core/AI.pbi"
 IncludeFile "./Core/Input.pbi"
@@ -54,13 +55,16 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 820, "TinyGomoku " + #APP_
   ButtonGadget(#BTN_RESTART, 15, 688, 270, 35, "Restart")
   ButtonGadget(#BTN_UNDO, 295, 688, 270, 35, "Back a Move")
 
-  CheckBoxGadget(#CHK_SOUND, 15, 732, 100, 24, "Sound")
+  CheckBoxGadget(#CHK_SOUND, 15, 732, 90, 24, "Sound")
   SetGadgetState(#CHK_SOUND, #True)
+  CheckBoxGadget(#CHK_MUSIC, 110, 732, 90, 24, "Music")
+  SetGadgetState(#CHK_MUSIC, #True)
   TextGadget(#LBL_VERSION, 400, 734, 165, 20, "v" + #APP_VERSION$, #PB_Text_Right)
 
   TextGadget(#LBL_STATUS, 15, 770, 550, 30, "", #PB_Text_Center)
   
   LoadUIFont()
+  InitBgm()
   LoadAiPrefs()
   ApplyAiPrefsToUi()
   SyncCanvasSize()
@@ -68,12 +72,14 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 820, "TinyGomoku " + #APP_
   
   InitBoard()
   DrawBoard()
+  StartBgm()
   
   ; Ui Event
   Repeat
     NetPoll()
     AiPoll()
     EffectsTick()
+    MusicTick()
   
     Select WaitWindowEvent(10)
       Case #PB_Event_CloseWindow
@@ -102,6 +108,21 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 820, "TinyGomoku " + #APP_
           Case #CHK_SOUND
             soundEnabled = GetGadgetState(#CHK_SOUND)
             SaveAiPrefs()
+
+          Case #CHK_MUSIC
+            If musicLoaded
+              musicEnabled = GetGadgetState(#CHK_MUSIC)
+              SaveAiPrefs()
+              If musicEnabled
+                If gameOver
+                  ; Stay silent until Restart / new game.
+                Else
+                  StartBgm()
+                EndIf
+              Else
+                StopBgm()
+              EndIf
+            EndIf
   
           Case #BTN_HOST
             SaveAiPrefs()
@@ -138,6 +159,7 @@ If OpenWindow(#WIN_MAIN, #PB_Ignore, #PB_Ignore, 580, 820, "TinyGomoku " + #APP_
   ForEver
   
   SaveAiPrefs()
+  FreeBgm()
   NetDisconnect()
   
   If boardImage <> -1

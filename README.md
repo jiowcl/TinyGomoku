@@ -27,24 +27,27 @@ Open `TinyGomoku/TinyGomoku.pbp` in PureBasic, or compile `TinyGomoku/TinyGomoku
 - **Join Room** — enter the host IP/port and connect (you play White).
 
 **Restart** resets the board. **Back a Move** undoes one move in Local mode, or a human+AI pair in vs AI mode.  
-**Sound** toggles all game audio. Difficulty, side, IP/port, and sound preference are remembered in `TinyGomoku.ini` next to the executable.
+**Sound** toggles SFX. **Music** toggles background music (requires `Sound/bgm.wav` or a tracker module next to the exe).  
+Difficulty, side, IP/port, sound, and music preferences are remembered in `TinyGomoku.ini` next to the executable.
 
 ## Features
 
 - Local two-player battle
 - Local vs AI (Easy / Normal / Hard, choose Black or White; Hard uses threat combos + 1-ply reply check)
 - LAN two-player battle (TCP)
-- Remembered AI / network / sound preferences
+- Remembered AI / network / sound / music preferences
+- Optional BGM (`LoadMusic`) with fade-out on game end
 - Place animation (ease + overshoot), shaded stones, win-line pulse, result fade-in
 - Undo fade-out and short victory particle burst
 - Four-in-a-row threat cue sound for the defending side
-- Undo / Restart / Sound toggle
-- Version shown in the window title and UI (`v1.2`)
+- Undo / Restart / Sound / Music toggles
+- Version shown in the window title and UI (`v1.3`)
 
 ## License
 
 Copyright (c) 2017-2026 Ji-Feng Tsai.  
 Copyright (c) 効果音ラボ.  
+Copyright (c) PANICPUMPKIN.  
 Code released under the MIT license.
 
 Icon: [AI Icon Generator](https://perchance.org/ai-icon-generator)  

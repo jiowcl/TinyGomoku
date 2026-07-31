@@ -61,6 +61,13 @@ Global netRxBuffer.s = ""
 Global prefHost.s = "127.0.0.1"
 Global prefPort.s = "8765"
 Global soundEnabled.i = #True
+Global musicEnabled.i = #True
+Global musicVolume.i = #MUSIC_VOLUME_DEFAULT
+Global musicLoaded.i = #False
+Global musicPlaying.i = #False
+Global musicPaused.i = #False
+Global musicFadeAt.i = 0
+Global musicFadeFrom.i = 0
 
 Global soundPath.s = "./Sound/"
 
