@@ -4,6 +4,7 @@ A tiny Gomoku (Five in a Row) game written in PureBasic, with local play, AI, an
 
 ![GitHub](https://img.shields.io/github/license/jiowcl/TinyGomoku.svg)
 ![PureBasic](https://img.shields.io/badge/language-PureBasic-blue.svg)
+![Category](https://img.shields.io/badge/Game-Gomoku-2B2D42?style=flat-square)
 
 ![Screenshot](./Screenshot/Demo1.png)
 
